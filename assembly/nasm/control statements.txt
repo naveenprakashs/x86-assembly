@@ -1,0 +1,1265 @@
+if
+--
+
+if statement can be nested or linear ( i mean straight - wihtout nesting - one by one )
+
+linear if else 
+--------------
+
+if()
+{
+
+}
+else
+{
+
+}
+statement_1
+statement_2
+if()
+{
+
+}
+else if ()
+{
+
+}
+else if ()
+{
+
+}
+else if ()
+{
+
+}
+else if ()
+{
+
+}
+else
+{
+
+}
+statement_3
+statement_4
+
+
+
+nested if else
+--------------
+
+in nested if else case we have to take spcial jump for statements inside nested if.
+
+those statements have to execute sequentially. 
+
+
+
+if()
+{
+	if()
+	{
+		if()
+		{
+
+		}
+		statement_2
+	}
+	statement_1
+}
+
+else
+{
+	if()
+	{
+	    if()
+	    {
+	    	if()
+	    	{
+
+	    	}
+	    	else
+	    	{
+
+	    	}
+	    	statement_3
+	    }	
+	    statement_2
+	}
+	statement_1
+}
+_____________________________________________________________________________________________________________________________________________
+
+simple if 
+---------
+
+if(num==1)
+{
+	printf("num is 1");
+}
+
+
+IF
+jne next
+if_block_code
+
+next:
+instruction1
+instruction2
+____________________________________________________________________________________
+
+simple if else
+---------------
+
+if(num==1)
+{
+	printf("num is 1");
+}
+else
+{
+	printf("num is not 1");
+}
+
+IF
+jne ELSE
+if_block_code
+jmp next
+
+ELSE
+else_block_code
+
+next:
+instruction1
+instruction2
+_____________________________________________________________________________________
+
+simple else if
+--------------
+
+if(num==1)
+{
+	printf("num is 1");
+}
+else if(num==2)
+{
+	printf("num is 2");
+}
+else if(num==3)
+{
+	printf("num is 3");
+}
+else if(num==4)
+{
+	printf("num is 4");
+}
+else
+{
+	printf("nothing matched");
+}
+
+
+
+IF:
+jne FIRST_ELSE_IF
+if_block_code
+jmp next
+
+FIRST_ELSE_IF:
+jne SECOND_ELSE_IF
+first_else_if_code
+jmp next
+
+SECOND_ELSE_IF:
+jne THIRD_ELSE_IF
+seoncd_else_if_code
+jmp_next
+
+THIRD_ELSE_IF:
+jne ELSE
+third_else_if_code
+jmp_next
+
+ELSE:
+else_block_code
+
+next:
+instruction 1
+instruction 2
+_____________________________________________________________________________________
+
+nested if else
+-------------- 
+
+if(num1==1)              ---> first if
+{
+	if(num2==2)          ---> second if
+	{
+	   if(num2==2)       ---> third if
+	   {
+
+	   }
+	   else             ----> third else
+	   {
+	   
+	   }
+	   if(num3==3)       ---> fourth if
+	   {
+	      if(num4==4)    ---> fifth if
+	      { 
+
+	      }
+	      else               --> fifth else
+	      {
+              if(num5==5)    --> seventh if
+              {
+
+              }
+              else           --> seventh else
+              {
+
+              }
+             instruction5
+	      }
+	      instruction4
+	   }
+	   else                 ---> fourth else
+	   {
+
+	   }
+	   instruction3
+
+	}
+	else                    ---> second else
+	{
+
+	}
+	instruction2
+}
+else                         ----> first else
+{
+	
+}
+instruction1
+
+
+
+
+FIRST_IF:
+jne FIRST_ELSE
+first_if_block_code
+
+	SECOND_IF;
+	jne SECOND_ELSE
+	second_if_block_code
+
+		THIRD_IF: 
+		jne THIRD_ELSE
+		third_if_block_code
+		jmp FOURTH_IF
+
+		THIRD_ELSE:
+		third_else_block_code
+
+		FOURTH_IF:
+		jne FOURTH_ELSE
+		fourth_if_block_code
+
+			FIFTH_IF: 
+			jne FIFTH_ELSE
+			fifth_if_code
+            jmp GET_OUT_2
+
+			FIFTH_ELSE:
+			fifth_if_block_code
+
+				SEVENTH_IF:
+				jne SEVENTH_ELSE
+				seventh_if_block_code
+                jmp GET_OUT
+
+				SEVENTH_ELSE:
+				seventh_else_block_code
+
+				GET_OUT:
+				jmp LEVEL_1
+
+			GET_OUT_2:	
+            jmp LEVEL_2
+
+		FOURTH_ELSE:
+		fourth_else_block_code
+		jmp LEVEL_3
+
+	SECOND_ELSE:
+	second_else_blcok_code
+	jmp LEVEL_4
+
+FIRST_ELSE:
+first_else_block_code
+jmp LEVEL_5
+
+LEVEL_1:
+instruction5
+
+LEVEL_2:
+instruction4
+
+LEVEL_3:
+instruction3
+
+LEVEL_4:
+instruction2
+
+LEVEL_5:
+instruction1
+
+_______________________________________________________________________________________________________________________________________________________________________________________________________________
+                                                                        |                                                                       |                                                             |
+NESTED_IF_ELSE                                                          |    NESTED_IF                                                          |   LINEAR_IF_ELSE                                            |
+________________________________________________________________________|_______________________________________________________________________|_____________________________________________________________|
+                                   +                                    +                                    +                                  +                      +
+#include<stdio.h>                  |    mov dword ptr [ebp-4] , 0       |   #include<stdio.h>                |   mov dword ptr [ebp-4] , 0      |  #include<stdio.h>   |
+int main()                         |                                    |   int main()                       |                                  |  int main()          |  mov dword ptr [ebp-4] , 0
+{                                  |    cmp dword ptr [ebp-4] , 1       |   {                                |   cmp dword ptr [ebp-4] , 1      |  {                   |
+    int num=0;                     |    jne first_else                  |       int num=0;                   |   jne first_extension            |      int num=0;      |  if_one
+                                   |    mov dword ptr [ebp-4] , 1       |                                    |   mov dword ptr [epb-4] , 1      |                      |  cmp dword ptr [ebp-4] , 1
+     if(num==1)                    |                                    |        if(num==1)                  |                                  |      if(num==1)      |  jne else_one
+     {                             |      cmp dword ptr [ebp-4] , 3     |        {                           |    cmp dword ptr [ebp-4] , 3     |      {               |  mov dword ptr [ebp-4] , 2
+         num=1;                    |      jne second_else               |            num=1;                  |    jne second_extension          |          num=2;      |  jmp if_two
+         if(num==3)                |      mov dword ptr [ebp-4] , 3     |            if(num==3)              |    mov dword ptr [ebp-4] , 3     |      }               |
+           {                       |                                    |              {                     |                                  |      else            |  e1se_one:
+               num=3;              |       cmp dword ptr [ ebp-4] , 5   |                  num=3;            |     cmp dword ptr [ebp-4] , 5    |      {               |  mov dword ptr [ebp-4] , 3
+               if(num==5)          |       jne third_else               |                  if(num==5)        |     jne third_extension          |          num=3;      |
+               {                   |       mov dword ptr [ebp-4] , 5    |                  {                 |     mov dword ptr [ebp-4] , 5    |      }               |  if_two:
+                  num=5;           |                                    |                     num=5;         |                                  |                      |  cmp dword ptr [ebp-4] , 4
+                  if(num=7)        |        cmp dowrd ptr [ebp-4] , 7   |                     if(num=7)      |      cmp dword ptr [ebp-4] , 7   |      if(num==4)      |  jne if_three
+                  {  num=7;        |        jne fourth_else             |                     {  num=7;      |      jne fourth_extension        |      {               |  mov dword ptr [ebp-4] , 5
+                      if(num==9)   |        mov dword ptr [ebp-4] , 7   |                         if(num==9) |      mov dword ptr [ epb-4] , 7  |          num=5;      |
+                      {            |                                    |                         {          |                                  |      }               |  if_three:
+                          num=9;   |         cmp dword ptr [epb-4] , 9  |                             num=9; |       cmp dword ptr [ebp-4] ,  9 |                      |  cmp dword ptr [ebp-4] , 6
+                      }            |         jne fifth_else             |                         }          |       jne fifth_extension        |      if(num==6)      |  jne else_three
+                      else         |         mov dword ptr [ebp-4] , 9  |                         num=10;    |       mov dword ptr [epb-4] , 9  |      {               |  mov dword ptr [ebp-4] , 7
+                      {            |                                    |                     }              |                                  |          num=7;      |  jump quit
+                          num=10;  |                                    |                     num=8;         |                                  |      }               |
+                      }            |    fifth_else:                     |                  }                 |   fifth_extension:               |      else            |  else_3:
+                      num=100;     |    mov dword ptr [ebp-4] , 10      |                  num=6;            |   mov dword ptr [epb-4] , 10     |      {               |  cmp dword ptr [ebp-4] , 8
+                  }                |                                    |              }                     |                                  |          num=8;      |
+                  else             |    fifth_else_extension:           |              num=4;                |   fourth_extension:              |      }               |  quit:
+                  {                |    mov dword ptr [ebp-4] , 100;    |        }                           |   mov dword ptr [epb-4] , 8      |      return 0;       |
+                      num=8;       |    jmp fourth_else_extension       |                                    |                                  |  }                   |
+                  }                |                                    |        num=2;                      |   third_extension:               |                      |
+                  num=8;           |    fourth_else:                    |                                    |   mov dword ptr [epb-4] , 6      |                      |
+               }                   |    mov dword ptr [ebp-4] , 8       |       return 0;                    |                                  |                      |
+               else                |                                    |   }                                |   second_extension:              |                      |
+               {                   |    fourth_else_extension:          |                                    |   mov dword ptr [epb-4] , 4      |                      |
+                   num=6;          |    mov dword ptr [ebp-4] , 8       |                                    |                                  |                      |
+               }                   |    jmp third_else_extension        |                                    |   first_extension:               |                      |
+               num=6;              |                                    |                                    |   mov dword ptr [epb-4] , 2      |                      |
+           }                       |    third_else:                     |                                    |                                  |                      |
+           else                    |    mov dword ptr [ebp-4] , 6       |                                    +                                  +                      +
+           {                       |                                    |
+               num=4;              |    third_else_extension:           |
+           }                       |    mov dword ptr [ebp-4] , 6       |
+           num=4;                  |    jmp second_else_extension       |
+     }                             |                                    |
+     else                          |    second_else:                    |
+     {                             |    mov dword ptr [ebp-4] , 4       |
+         num=2;                    |                                    |
+     }                             |    second_else_extension:          |
+     num=2;                        |    mov dword ptr [ebp-4] , 4       |
+                                   |    jmp first_else_extension        |
+    return 0;                      |                                    |
+}                                  |    first_else:                     |
+                                   |    mov dword ptr [ebp-4] , 2       |
+                                   |                                    |
+                                   |    first_else_extension:           |
+                                   |    mov dword ptr [ebp-4] , 2       |
+                                   |                                    |
+                                   |    end:                            |
+--------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+
+nested_if 2
+-----------
+
+if(num1==0)          --> first if
+{
+     instruction_7
+
+	if(num6==0)      --> second if
+	{
+
+	}
+	else             --> second else
+	{
+
+    instruction_3
+
+    if(num12==0)     --> third if
+    {
+
+	  
+	}
+	else              --> third else
+	{
+	  if(num13==0)
+	}
+    
+    instruction_4
+
+    }
+    
+    instruction_2
+
+    if(num==14)          ---> fourth if
+    {
+       if(num==15)        ---> fifth if
+       {
+
+       }
+       else               ---> fifth else
+       {
+
+       }
+       instruction_5
+    }
+
+    instruction_6
+}
+
+else                 --> first else
+{
+   instruction_8
+
+	if(num2==0)      ----> sixth if
+	{
+
+      instruction_10
+
+	    if(num3==0)  ---> seventh if
+	    {
+
+	      instruction_12
+
+            if(num5==0)  ---->eighth if
+            {
+               instruction_13
+
+            }
+
+           instruction_14
+	    }
+	    else             -----> seventh else
+	    {
+
+           instruction_15
+
+	       if(num4==0)   ----> nineth if
+	       {
+
+	       instruction_16
+
+	       }
+
+	       instruction_17
+	    }
+
+	  instruction_11
+	}
+	else             ---> sixth else
+	{
+     
+     instruction_18
+
+	  if(num7==0)    --> tenth if
+	  {
+           instruction_19
+
+	  }
+	  else           --> tenth else
+	  {
+	      instruction_21
+
+	     if(num10==0)   --> eleventh if
+	     {
+
+          instruction_22
+
+	        if(num11==0)  ---> twelveth if
+	        {
+
+            instruction_23
+
+	        }
+	        else          ---> twelveth else
+	        {
+
+	        }
+	        instruction_24
+	     }
+
+	     instruction_25
+	  }
+
+	  instruction_20
+	}
+	instruction_9
+}
+instruction_1
+
+
+
+FIRST_IF
+jne FIRST_ELSE
+first_if_block_code
+instruction_7
+
+	SECOND_IF
+	jne_SECOND_ELSE
+    second_if_block_code
+    jmp END_OF_SECOND_IF
+
+
+	SECOND_ELSE
+	instruction_3
+
+		THIRD_IF
+		jne THIRD_ELSE
+
+		THIRD_ELSE
+        
+        	THIRTEENTH_IF
+            jne END_OF_SECOND_ELSE
+    
+    END_OF_SECOND_ELSE`
+    instruction_4
+`
+	END_OF_SECOND_IF
+	instruction_2
+
+    FOURTH_IF
+    jne GO_OUT
+
+   		FIFTH_IF
+        jne FIFTH_ELSE
+        fifth_if_block_code
+        jmp QUIT
+
+        FIFTH_ELSE  
+
+        QUIT:
+        instruction_5
+
+    GO_OUT:
+    instruction_6
+    jump NEXT
+
+FIRST_ELSE
+first_else_block_code
+
+	instruction_8
+
+	SIXTH_IF
+	jne SIXTH_ELSE
+
+		instruction_10
+
+			SEVENTH_IF
+			jne SEVENTH_ELSE
+
+				instruction_12
+
+					EIGHTH_IF
+					jne LEVEL_5
+
+						instruction_13
+
+			    instruction_14
+
+			SEVENTH_ELSE
+
+				instruction_15
+
+				NINETH_IF
+				jne LEVEL_5
+				instruction_16
+
+			instruction_17
+
+	    instruction_11
+
+	SIXTH_ELSE
+
+		instruction_18
+
+		TENTH_IF
+		jne LEVEL_4
+
+			instruction_19
+
+		TENTH_ELSE
+
+
+			instruction_21
+
+			ELEVENTH_IF
+		    jne LEVEL_3
+
+				instruction_22
+
+				TWELVETH_IF
+				jne LEVEL_2
+
+					instruction_23
+
+				TWELVETH_ELSE
+
+            LEVEL_2:
+			instruction_24
+
+        LEVEL_3:
+		instruction_25
+
+    LEVEL_4:
+	instruction_20
+	
+LEVEL_5:
+instruction_9
+
+NEXT:
+instruction_1
+
+________________________________________________________________________________________________________________________________________________________________________________________
+
+if else 3
+----------
+
+#include<stdio.h>                                    +    main:
+int main()                                           |      push rbp
+{                                                    |      mov rbp, rsp
+    int num=0;                                       |      mov DWORD PTR [rbp-4], 0
+                                                     |      	cmp DWORD PTR [rbp-4], 1
+    if(num==1)                                       |      	jne .L2
+    {                                                |      	mov DWORD PTR [rbp-4], 1
+        num=1;                                       |      		cmp DWORD PTR [rbp-4], 2
+                                                     |      		jne .L3
+        if(num==2)                                   |      		mov DWORD PTR [rbp-4], 2
+        {                                            |      			cmp DWORD PTR [rbp-4], 3
+            num=2;                                   |     				jne .L4
+                                                     |      			mov DWORD PTR [rbp-4], 3
+            if(num==3)                               |     					cmp DWORD PTR [rbp-4], 4
+            {                                        |     					jne .L5
+                num=3;                               |     					mov DWORD PTR [rbp-4], 4
+                                                     |     						 cmp DWORD PTR [rbp-4], 5
+                if(num==4)                           |    					     jne .L6
+                {                                    |      					 mov DWORD PTR [rbp-4], 5
+                    num=4;                           |     						 jmp .L7
+                                                     |   	
+                                                     |							 .L6:
+                    if(num==5)                       |     						 mov DWORD PTR [rbp-4], 6
+                    {                                |      					 	cmp DWORD PTR [rbp-4], 6
+                        num=5;                       |      						jne .L8
+                    }                                |      						mov DWORD PTR [rbp-4], 7
+                    else                             |   							.L8:
+                    {                                |      						cmp DWORD PTR [rbp-4], 8
+                        num=6;                       |      						jne .L7
+                                                     |      						mov DWORD PTR [rbp-4], 10
+                        if(num==6)                   |     								cmp DWORD PTR [rbp-4], 10
+                        {                            |     								jne .L9
+                            num=7;                   |      							mov DWORD PTR [rbp-4], 11
+                        }                            |      						   	jmp .L7
+                        if(num==8)                   |   					 			.L9:
+                        {	                         |     							    mov DWORD PTR [rbp-4], 12
+                            num=10;                  |     							   		 cmp DWORD PTR [rbp-4], 12
+                            if(num==10)              |      								 jne .L7
+                            {                        |     									 mov DWORD PTR [rbp-4], 13
+                                num=11;              |     										 cmp DWORD PTR [rbp-4], 13
+                            }                        |     										 jne .L10
+                            else                     |     										 mov DWORD PTR [rbp-4], 14
+                            {                        |     										 jmp .L7
+                                num=12;              |    										 .L10:
+                                if(num==12)          |     										 mov DWORD PTR [rbp-4], 15
+                                {                    |   									 .L7:
+                                    num=13;          |     									 mov DWORD PTR [rbp-4], 4
+                                                     |    								.L5:
+                                    if(num==13)      |      							mov DWORD PTR [rbp-4], 3
+                                    {                |    							.L4:
+                                        num=14;      |     						    mov DWORD PTR [rbp-4], 2
+                                    }                |   						 .L3:
+                                    else             |     						 mov DWORD PTR [rbp-4], 1
+                                    {                |      jmp .L11
+                                        num=15;      |   	 .L2:
+                                    }                |     	 mov DWORD PTR [rbp-4], 6
+                                }                    |     		 cmp DWORD PTR [rbp-4], 7
+                            }                        |     		 jne .L12
+                        }                            |      	 mov DWORD PTR [rbp-4], 8
+                    }                                |      			cmp DWORD PTR [rbp-4], 8
+                    num=4;                           |      			jne .L13
+                }                                    |    			    mov DWORD PTR [rbp-4], 9
+            num=3;                                   |      				cmp DWORD PTR [rbp-4], 9
+            }                                        |      				jne .L14
+            num=2;                                   |      				mov DWORD PTR [rbp-4], 10
+        }                                            |    				.L14:
+        num=1;                                       |     				 mov DWORD PTR [rbp-4], 9
+    }                                                |    		.L13:
+                                                     |    		  mov DWORD PTR [rbp-4], 8
+    else                                             |    .L12:
+    {                                                |      mov DWORD PTR [rbp-4], 6
+        num=6;                                       |    .L11:
+                                                     |      mov eax, 0
+        if(num==7)                                   |      pop rbp
+        {                                            |      ret
+            num=8;                                   |
+                                                     |
+            if(num==8)                               |
+            {                                        |
+                num=9;                               |
+                                                     |
+                if(num==9)                           |
+                {	                                 |
+                    num=10;                          |
+                }                                    |
+                num=9;                               |
+            }                                        |
+            num=8;                                   |
+        }                                            |
+        num=6;                                       |
+    }                                                |
+}                                                    |
+                                                     |
+_____________________________________________________|__________________________________________________________________________________________________________________________________
+
+                                                                                                                                                                   +
+                       +                               +                       + square:                     +  #include<time.h>    +  square:                     |
+  #include<time.h>     |  square:                      |  #include<time.h>     |   push rbp                  |  int square()        |    push rbp                  |
+  int square(int num)  |    push rbp                   |  int square()         |   mov rbp, rsp              |  {                   |    mov rbp, rsp              |
+  {                    |    mo^ rbp, rsp               |  {                    |   sub rsp, 16               |  int num=getchar();  |    sub rsp, 16               |
+  int i=7;             |    mov DWORD PTR [rbp-20], edi|  int num=getchar();   |   mov eax, 0                |  int i=7;            |    mov eax, 0                |
+  if(num==0)           |    mov DWORD PTR [rbp|4], 7   |  int i=7;             |   call getchar              |  if(num==0)          |    call getchar              |
+  {                    |    cmp DWORD PTR [rbp-20], 0  |  if(num==0)           |   mo^ DWORD PTR [rbp-4], eax|  {                   |    mo^ DWORD PTR [rbp-4], eax|
+      i=1;             |    jne .L2                    |  {                    |   mov DWORD PTR [rbp|8], 7  |      i=0;            |    mov DWORD PTR [rbp|8], 7  |
+  }                    |    mov DWORD PTR [rbp-4], 1   |      i=0;             |   cmp DWORD PTR [rbp-4], 0  |      if(num==1)      |    cmp DWORD PTR [rbp-4], 0  |
+  else                 |    jmp .L3                    |      if(num==1)       |   jne .L2                   |      {               |    jne .L2                   |
+  {                    |  .L2:                         |      {                |   mov DWORD PTR [rbp-8], 0  |        i=1;          |    mov DWORD PTR [rbp-8], 0  |
+      i=2;             |    mov DWORD PTR [rbp-4], 2   |        i=1;           |   cmp DWORD PTR [rbp-4], 1  |        if(num==2)    |    cmp DWORD PTR [rbp-4], 1  |
+  }                    |  .L3:                         |        if(num==2)     |   jne .L4                   |        {             |    jne .L3                   |
+  }                    |    nop                        |        {              |   mov DWORD PTR [rbp-8], 1  |            i=2;      |    mov DWORD PTR [rbp-8], 1  |
+                       |    pop rbp                    |            i=2;       |   cmp DWORD PTR [rbp-4], 2  |            if(num==3)|    cmp DWORD PTR [rbp-4], 2  |
+                       |    ret                        |            if(num==3) |   jne .L4                   |            {         |    jne .L4                   |
++------------------------------------------------------+            {          |   mov DWORD PTR [rbp-8], 2  |              i=3;    |    mov DWORD PTR [rbp-8], 2  |
+ #includevtime.hv      | square:                       |              i=3;     |   cmp DWORD PTR [rbp-4], 3  |            }         |    cmp DWORD PTR [rbp-4], 3  |
+ int square()          |   push rbp                    |            }          |   jne .L4                   |            else      |    jne .L5                   |
+ {                     |   mov rbp, rsp                |        }              |   mov DWORD PTR [rbp-8], 3  |            {         |    mov DWORD PTR [rbp-8], 3  |
+ int num=getchar();    |   sub rsp, 16                 |      }                |   jmp .L4                   |              i=4;    |    jmp .L6                   |
+ int i=7;              |   mov eax, 0                  |  }                    | .L2:                        |            }         |  .L5:                        |
+ if(num==0)            |   call getchar                |  else                 |   mov DWORD PTR [rbp-8], 9  |          i=5;        |    mov DWORD PTR [rbp-8], 4  |
+ {                     |   mo^ DWORD PTR [rbp-4], eax  |  {                    | .L4:                        |        }             |  .L6:                        |
+     i=0;              |   mov DWORD PTR [rbp|8], 7    |      i=9;             |   nop                       |        else          |    mov DWORD PTR [rbp-8], 5  |
+     if(num==1)        |   cmp DWORD PTR [rbp-4], 0    |  }                    |   leave                     |        {             |    jmp .L3                   |
+     {                 |   jne .L2                     |  }                    |   ret                       |           i=6;       |  .L4:                        |
+       i=1;            |   mov DWORD PTR [rbp-8], 0    |                       |                             |        }             |    mov DWORD PTR [rbp-8], 6  |
+     }                 |   cmp DWORD PTR [rbp-4], 1    |                       |                             |      }               |  .L3:                        |
+ }                     |   jne .L4                     |                       |                             |      i=7;            |    mov DWORD PTR [rbp-8], 7  |
+ else                  |   mov DWORD PTR [rbp-8], 1    |                       |                             |  }                   |    jmp .L7                   |
+ {                     |   jmp .L4                     |                       |                             |  else                |  .L2:                        |
+     i=2;              | .L2:                          |                       |                             |  {                   |    mov DWORD PTR [rbp-8], 9  |
+ }                     |   mov DWORD PTR [rbp-8], 2    |                       |                             |      i=9;            |  .L7:                        |
+ }                     | .L4:                          |                       |                             |  }                   |    nop                       |
+                       |   nop                         |                       |                             |  }                   |    leave                     |
+                       |   leave                       |                       |                             |                      |    ret                       |
+                       |   ret                         |                       |                             |                      |                              |
++----------------------+-------------------------------+-----------------------+-----------------------------+----------------------+------------------------------+
+                                   +                                +
+  #include<time.h>                 |   square:                      |
+  int square()                     |     push rbp                   |
+  {                                |     mov rbp, rsp               |
+  int num=getchar();               |     sub rsp, 16                |
+  int i=7;                         |     mov eax, 0                 |
+  if(num==0)                       |     call getchar               |
+  {                                |     mo^ DWORD PTR [rbp-4], eax |
+      i=0;                         |     mov DWORD PTR [rbp|8], 7   |
+      if(num==1)                   |     cmp DWORD PTR [rbp-4], 0   |
+      {                            |     jne .L2                    |
+        i=1;                       |     mov DWORD PTR [rbp-8], 0   |
+        if(num==2)                 |     cmp DWORD PTR [rbp-4], 1   |
+        {                          |     jne .L3                    |
+            i=2;                   |     mov DWORD PTR [rbp-8], 1   |
+            if(num==3)             |     cmp DWORD PTR [rbp-4], 2   |
+            {                      |     jne .L4                    |
+              i=3;                 |     mov DWORD PTR [rbp-8], 2   |
+            }                      |     cmp DWORD PTR [rbp-4], 3   |
+            else                   |     jne .L5                    |
+            {                      |     mov DWORD PTR [rbp-8], 3   |
+              i=4;                 |     jmp .L6                    |
+              if(i==5)             |   .L5:                         |
+              {                    |     mov DWORD PTR [rbp-8], 4   |
+                  i=7;             |     cmp DWORD PTR [rbp-8], 5   |
+              }                    |     jne .L7                    |
+              else                 |     mov DWORD PTR [rbp-8], 7   |
+              {                    |     jmp .L6                    |
+                  i=8;             |   .L7:                         |
+                                   |     mov DWORD PTR [rbp-8], 8   |
+                  if(i==6)         |     cmp DWORD PTR [rbp-8], 6   |
+                  {                |     jne .L8                    |
+                      i=10;        |     mov DWORD PTR [rbp-8], 10  |
+                      if(i==7)     |     cmp DWORD PTR [rbp-8], 7   |
+                      {            |     jne .L9                    |
+                          i=12;    |     mov DWORD PTR [rbp-8], 12  |
+                      }            |     jmp .L6                    |
+                      else         |   .L9:                         |
+                      {            |     mov DWORD PTR [rbp-8], 13  |
+                          i=13;    |     jmp .L6                    |
+                      }            |   .L8:                         |
+                  }                |     mov DWORD PTR [rbp-8], 11  |
+                  else             |   .L6:                         |
+                  {                |     mov DWORD PTR [rbp-8], 5   |
+                      i=11;        |     jmp .L3                    |
+                  }                |   .L4:                         |
+              }                    |     mov DWORD PTR [rbp-8], 6   |
+            }                      |   .L3:                         |
+          i=5;                     |     mov DWORD PTR [rbp-8], 7   |
+        }                          |     jmp .L11                   |
+        else                       |   .L2:                         |
+        {                          |     mov DWORD PTR [rbp-8], 9   |
+           i=6;                    |   .L11:                        |
+        }                          |     nop                        |
+      }                            |     leave                      |
+      i=7;                         |     ret                        |
+  }                                |                                |
+  else                             |                                |
+  {                                |                                |
+      i=9;                         |                                |
+  }                                |                                |
+  }                                |                                |
++----------------------------------+--------------------------------+
+______________________________________________________________________________________________________________________________________________________________________________________
+
+simple switch statement
+-----------------------
+switch in C language can be implemented in two ways.
+
+1. using conditional jump for every case
+2. using jump table
+
+
+switch(num)
+{
+	case 1: printf("case 1"); break;
+	case 2: printf("case 2");
+	case 3: printf("case 3");
+	case 4: printf("case 4");
+	default: printf("default");
+}
+
+
+
+using conditional jump for every case
+--------------------------------------
+
+SWITCH:
+
+cmp MAXIMUM_CASE_RANGE , input
+ja default
+
+IF num==case1
+je case_1
+
+ELSE IF num==case2
+je case_2
+
+ELSE IF num==case3
+je case_3
+
+ELSE IF num==case4
+je case_4
+
+ELSE
+jump default
+
+case_1: printf "case 1"
+        jump NEXT
+case_2: printf "case 2"
+
+case_3: printf "case 3"
+
+case_4: printf "case 4"
+
+default: printf "default"
+
+NEXT:
+instruction1
+instruction2
+_____________________________________________________________________________________
+
+using jump tables
+------------------
+
+cmp MAXIMUM_CASE_RANGE , input
+ja default
+
+mov ebx , [input]
+mov ecx , jumpTable
+
+mov eax , [ecx+ebx*4]
+
+jumpTable:
+dword case_1
+dword case_2
+dword case_3
+dword case_4
+
+case_1: printf "case 1"
+        jump NEXT
+case_2: printf "case 2"
+
+case_3: printf "case 3"
+
+case_4: printf "case 4"
+
+default: printf "default"
+
+NEXT:
+instruction1
+instruction2
+
+
+jump tables vs conditional jumps
+---------------------------------
+
+if the number of cases are less than 4 we can use conditional jump
+
+if the number of cases are more than 4 and the cases numbers are in an order we can use jump tables
+
+if the switch case values are continuous like 1,2,3,4 we can use jump table
+
+if the switch case values are random we have to use conditional jump
+
+
+compiler_optimizations on swith case 
+-------------------------------------
+
+* The compiler first check the that the given value is greater than the maximum switch range.
+
+* If it is greater, then it executes the default case and exit the switch. 
+
+
+4 cases with continuous values                1      |  5 cases with continuous values                        2   |    5 cases continuous values with collapsed order             3
+-----------------------------------------------------|------------------------------------------------------------|------------------------------------------------------------------
+                                                     |                         ; eax contains input               |                       ;eax contains input
+                    ;eax contains input              |  #include<time.h>         cmp eax, 5                       | #include<time.h>       cmp eax, 5
+#include<time.h>         cmp eax, 1                  |  int square(int num)        ja .L2                         | int square(int num)     ja .L2
+int square(int num)       je .L3                     |  {                          mo^ eax, eax                   | {                       mo^ eax, eax
+{                         cmp eax, 1                 |  srand(time(NULL));         mov rax, QWORD PTR .L4[0+rax*8]| srand(time(NULL));      mov rax, QWORD PTR .L4[0+rax*8]
+srand(time(NULL));        jg .L4                     |  switch (rand()) {          jmp rax                        | switch (rand()) {       jmp rax
+switch (rand()) {         test eax, eax              |  case 0:                  .L4:                             | case 3:               .L4:
+case 0:                   je .L5                     |  num=num+0;                 .quad .L10                     | num=num+3;              .quad .L10
+printf("zero\n");         jmp .L2                    |  break;                     .quad .L5                      | break;                  .quad .L5
+break;                  .L4:                         |  case 1:                    .quad .L6                      | case 0:                 .quad .L6
+case 1:                   cmp eax, 2                 |  num=num+1;                 .quad .L7                      | num=num+0;              .quad .L7
+printf("one\n");          je .L6                     |  break;                     .quad .L8                      | break;                  .quad .L8
+break;                    cmp eax, 3                 |  case 2:                    .quad .L9                      | case 1:                 .quad .L9
+case 2:                   je .L7                     |  num=num+2;               .L5:                             | num=num+1;            .L7:
+printf("two\n");          jmp .L2                    |  break;                     add DWORD PTR [rbp-4], 1       | break;                  add DWORD PTR [rbp-4], 3
+break;                  .L5:                         |  case 3:                    jmp .L2                        | case 5:                 jmp .L2
+case 3:                   mov edi, OFFSET FLAT:.LC0  |  num=num+3;               .L6:                             | num=num+5;            .L5:
+printf("three\n");        call puts                  |  break;                     add DWORD PTR [rbp-4], 2       | case 2:                 add DWORD PTR [rbp-4], 1
+break;                    jmp .L2                    |  case 4:                    jmp .L2                        | num=num+2;              jmp .L2
+}                       .L3:                         |  num=num+4;               .L7:                             | break;                .L9:
+}                         mov edi, OFFSET FLAT:.LC1  |  break;                     add DWORD PTR [rbp-4], 3       | case 4:                 add DWORD PTR [rbp-4], 5
+                          call puts                  |  case 5:                    jmp .L2                        | num=num+4;            .L6:
+                          jmp .L2                    |  num=num+5;               .L8:                             | break;                  add DWORD PTR [rbp-4], 2
+                        .L6:                         |  }                          add DWORD PTR [rbp-4], 4       | }                       jmp .L2
+                          mov edi, OFFSET FLAT:.LC2  |  }                          jmp .L2                        | }                     .L8:
+                          call puts                  |                           .L9:                             |                         add DWORD PTR [rbp-4], 4
+                          jmp .L2                    |                             add DWORD PTR [rbp-4], 5       |                         jmp .L2
+                        .L7:                         |                             jmp .L2                        |                       .L10:
+                          mov edi, OFFSET FLAT:.LC3  |                           .L10:                            |                         nop
+                          call puts                  |                             nop                            |                       .L2:
+                          nop                        |                           .L2:                             |                         nop
+                        .L2:                         |                             nop                            |                         leave
+                          nop                        |                             leave                          |                         ret
+                          leave                      |                             ret                            |
+                          ret                        |                                                            |
+_____________________________________________________|____________________________________________________________|____________________________________________________________________
+                                                  4  |                                                       5    |                                                                 6
+                                                     |                                                            |                            cmp eax, 120
+#include<time.h>      cmp eax, 10                    | #include<time.h>      cmp eax, 4                           |  include<time.h>            ja .L2
+int square(int num)    ja .L2                        | int square(int num)    je .L3                              |  nt square(int num)         mo^ eax, eax
+{                      mo^ eax, eax                  | {                      cmp eax, 4                          |                             mov rax, QWORD PTR .L4[0+rax*8]
+srand(time(NULL));   mov rax, QWORD PTR .L4[0+rax*8] | srand(time(NULL));     jg .L4                              |  rand(time(NULL));          jmp rax
+switch (rand()) {      jmp rax                       |   itch (rand()) {      cmp eax, 1                          |  witch (rand()) {         .L4:
+case 3:              .L4:                            | c se 3:                je .L5                              |  ase 111: num=num+1;break;  .quad .L2
+num=num+3;             .quad .L2                     | n m=num+3;             cmp eax, 1                          |  ase 2: num=num+2;break;    .quad .L2
+break;                 .quad .L5                     | b eak;                 jg .L6                              |  ase 3: num=num|3;break;    .quad .L3
+case 0:                .quad .L6                     | c se 0:                test eax, eax                       |  ase 4: num=num|4;break;    .quad .L5
+num=num+0;             .quad .L7                     | n m=num+0;             jmp .L2                             |  ase 5: num=num|5;break;    .quad .L6
+break;                 .quad .L8                     | b eak;               .L6:                                  |  ase 6: num=num+6;break;    .quad .L7
+case 1:                .quad .L9                     | c se 1:                cmp eax, 2                          |  ase 71: num=num+7;break;   .quad .L8
+num=num+1;             .quad .L2                     | n m=num+1;             je .L8                              |  ase 8: num=num+8;break;    .quad .L2
+break;                 .quad .L2                     | b eak;                 cmp eax, 3                          |  ase 9: num=num+9;break;    .quad .L9
+case 5:                .quad .L2                     | c se 5:                je .L9                              |  ase 10: num=num+10;break;  .quad .L10
+num=num+5;             .quad .L2                     | n m=num+5;             jmp .L2                             |  ase 11: num=num+11;break;  .quad .L11
+case 2:                .quad .L10                    | c se 2:              .L4:                                  |  ase 120: num=num+12;break  .quad .L12
+num=num+2;           .L7:                            | n m=num+2;             cmp eax, 101                        |  ase 13: num=num+13;break;  .quad .L2
+break;                 add DWORD PTR [rbp-4], 3      | b eak;                 je .L10                             |  ase 14: num=num+14;break;  .quad .L13
+case 4:                jmp .L2                       | c se 4:                cmp eax, 101                        |                             .quad .L14
+num=num+4;           .L5:                            | n m=num+4;             jg .L11                             |                             .quad .L2
+break;                 add DWORD PTR [rbp-4], 1      | b eak;                 cmp eax, 5                          |                         35  .quad .L2
+case 10:               jmp .L2                       | c se 100:              je .L12                             |                         90  .quad .L15
+num=num+10;          .L9:                            | n m=num+10;            cmp eax, 100                        |
+break;                 add DWORD PTR [rbp-4], 5      | b eak;                 je .L13                             |                         130   .quad .L16
+}                    .L6:                            | c se 101:              jmp .L2                             |                                .quad .L2
+}                      add DWORD PTR [rbp-4], 2      | n m=num+101;         .L11:                                 |                                .quad .L2
+                       jmp .L2                       | b eak;                 cmp eax, 102                        |                                .quad .L2
+                     .L8:                            | c se 102:              je .L14                             |                                .quad .L2
+                       add DWORD PTR [rbp-4], 4      | n m=num+102;           cmp eax, 103                        |                                .quad .L2
+                       jmp .L2                       | b eak;                 je .L15                             |                                .quad .L2
+                     .L10:                           | c se 103:              jmp .L2                             |                                .quad .L2
+                       add DWORD PTR [rbp-4], 10     | n m=num+103;         .L9:                                  |                                .quad .L2
+                       nop                           | b eak;                 add DWORD PTR [rbp-4], 3            |                                .quad .L17
+                     .L2:                            | }                      jmp .L2                             |                              .L16:
+                       nop                           | }                    .L5:                                  |                                add DWORD PTR [rbp-4], 1
+                       leave                         |                        add DWORD PTR [rbp-4], 1            |                                jmp .L2
+                       ret                           |                        jmp .L2                             |                              .L3:
+                                                     |                      .L12:                                 |                                add DWORD PTR [rbp-4], 2
+                                                     |                        add DWORD PTR [rbp-4], 5            |                                jmp .L2
+                                                     |                      .L8:                                  |                              .L5:
+                                                     |                        add DWORD PTR [rbp-4], 2            |                                add DWORD PTR [rbp-4], 3
+                                                     |                        jmp .L2                             |                                jmp .L2
+                                                     |                      .L3:                                  |                              .L6:
+                                                     |                        add DWORD PTR [rbp-4], 4            |                                add DWORD PTR [rbp-4], 4
+                                                     |                        jmp .L2                             |                                jmp .L2
+                                                     |                      .L13:                                 |                              .L7:
+                                                     |                        add DWORD PTR [rbp-4], 10           |                                add DWORD PTR [rbp-4], 5
+                                                     |                        jmp .L2                             |                                jmp .L2
+                                                     |                      .L10:                                 |                              .L8:
+                                                     |                        add DWORD PTR [rbp-4], 101          |                                add DWORD PTR [rbp-4], 6
+                                                     |                        jmp .L2                             |                                jmp .L2
+                                                     |                      .L14:                                 |                              .L15:
+                                                     |                        add DWORD PTR [rbp-4], 102          |                                add DWORD PTR [rbp-4], 7
+                                                     |                        jmp .L2                             |                                jmp .L2
+                                                     |                      .L15:                                 |                              .L9:
+                                                     |                        add DWORD PTR [rbp-4], 103          |                                add DWORD PTR [rbp-4], 8
+                                                     |                        nop                                 |                                jmp .L2
+                                                     |                      .L2:                                  |                              .L10:
+                                                     |                        nop                                 |                                add DWORD PTR [rbp-4], 9
+                                                     |                        leave                               |                                jmp .L2
+                                                     |                        ret                                 |                              .L11:
+                                                     |                                                            |                                add DWORD PTR [rbp-4], 10
+                                                     |                                                            |                                jmp .L2
+                                                     |                                                            |                              .L12:
+                                                     |                                                            |                                add DWORD PTR [rbp-4], 11
+                                                     |                                                            |                                jmp .L2
+                                                     |                                                            |                              .L17:
+                                                     |                                                            |                                add DWORD PTR [rbp-4], 12
+                                                     |                                                            |                                jmp .L2
+                                                     |                                                            |                              .L13:
+                                                     |                                                            |                                add DWORD PTR [rbp-4], 13
+                                                     |                                                            |                                jmp .L2
+                                                     |                                                            |                              .L14:
+                                                     |                                                            |                                add DWORD PTR [rbp-4], 14
+                                                     |                                                            |                                nop
+                                                     |                                                            |                              .L2:
+                                                     |                                                            |                                nop
+                                                     |                                                            |                                leave
+                                                     |                                                            |                                ret
+                                                     |                                                            |
+_____________________________________________________|____________________________________________________________|_________________________________________________________________________________
+                                                            |                                                                  |
+                                                            |   #include<time.h>               mov eax, 0                      |  #include<time.h>               sub eax, 1000
+#include<time.h>              cmp eax, 10                   |   int square(int num)            call rand                       |  int square(int num)             cmp eax, 6
+int square(int num)             je .L3                      |   {                              sub eax, 3                      |  {                               ja .L2
+{                               cmp eax, 10                 |   srand(time(NULL));             cmp eax, 102                    |  srand(time(NULL));              mov eax, eax
+srand(time(NULL));              jg .L4                      |   switch (rand()) {              ja .L2                          |  switch (rand()) {               mov rax, QWORD PTR .L4[0+rax*8]
+switch (rand()) {               cmp eax, 5                  |   case 100: num=num+2;break;     mo^ eax, eax                    |  case 1000: num=num+2;break;     jmp rax
+case 2000: num=num+2;break;     je .L5                      |   case 101: num=num|1;break;     mov rax, QWORD PTR .L4[0+rax*8] |  case 1001: num=num|1;break;   .L4:
+case 2001: num=num|1;break;     cmp eax, 5                  |   case 102: num=num|3;break;     jmp rax                         |  case 1002: num=num|3;break;     .quad .L3
+case 2002: num=num|3;break;     jg .L6                      |   case 103: num=num|21;break;  .L4:                              |  case 1003: num=num|21;break;    .quad .L5
+case 2003: num=num|21;break;    cmp eax, 3                  |   case 104: num=num|22;break;    .quad .L3                       |  case 1004: num=num|22;break;    .quad .L6
+case 2004: num=num|22;break;    je .L7                      |   case 105: num=num+23;break;    .quad .L5                       |  case 1005: num=num|23;break;    .quad .L7
+case 2005: num=num+23;break;    cmp eax, 4                  |   case 3: num=num+3;break;       .quad .L6                       |  case 1006: num=num+24;break;    .quad .L8
+case 3: num=num+3;break;        je .L8                      |   case 4: num=num|4;break;       .quad .L7                       |  }                               .quad .L9
+case 4: num=num|4;break;        jmp .L2                     |   case 5: num=num|5;break;       .quad .L2                       |  }                               .quad .L10
+case 5: num=num|5;break;      .L6:                          |   case 6: num=num|6;break;       .quad .L8                       |                                .L3:
+case 6: num=num|6;break;        cmp eax, 8                  |   case 8: num=num|8;break;       .quad .L9                       |                                  add DWORD PTR [rbp-4], 2
+case 8: num=num|8;break;        je .L9                      |   case 9: num=num+9;break;       .quad .L10                      |                                  jmp .L2
+case 9: num=num+9;break;        cmp eax, 8                  |   case 10: num=num+10;break;     .quad .L11                      |                                .L5:
+case 10: num=num+10;break;      jg .L10                     |   case 11: num=num+11;break;     .quad .L2                       |                                  add DWORD PTR [rbp-4], 1
+case 11: num=num+11;break;      cmp eax, 6                  |   }                              .quad .L2                       |                                  jmp .L2
+}                               je .L11                     |   }                              .quad .L2                       |                                .L6:
+}                               jmp .L2                     |                                  .quad .L2                       |                                  add DWORD PTR [rbp-4], 3
+                              .L4:                          |                                  .quad .L2                       |                                  jmp .L2
+                                cmp eax, 2002               |                                  .quad .L2                       |                                .L7:
+                                je .L12                     |                                  .quad .L2                       |                                  add DWORD PTR [rbp-4], 21
+                                cmp eax, 2002               |                                  .quad .L2                       |                                  jmp .L2
+                                jg .L13                     |                                  .quad .L2                       |                                .L8:
+                                cmp eax, 2000               |                                  .quad .L2                       |                                  add DWORD PTR [rbp-4], 22
+                                je .L14                     |                                  .quad .L2                       |                                  jmp .L2
+                                cmp eax, 2000               |                                  .quad .L2                       |                                .L9:
+                                jg .L15                     |                                  .quad .L2                       |                                  add DWORD PTR [rbp-4], 23
+                                cmp eax, 11                 |                                  .quad .L2                       |                                  jmp .L2
+                                je .L16                     |                                  .quad .L2                       |                                .L10:
+                                jmp .L2                     |                                  .quad .L2                       |                                  add DWORD PTR [rbp-4], 24
+                              .L13:                         |                                  .quad .L2                       |                                  nop
+                                cmp eax, 2004               |                                  .quad .L2                       |                                .L2:
+                                je .L17                     |                                  .quad .L2                       |                                  nop
+                                cmp eax, 2004               |                                  .quad .L2                       |                                  leave
+                                jl .L18                     |                                  .quad .L2                       |                                  ret
+                                cmp eax, 2005               |                                  .quad .L2                       |
+                                je .L19                     |                                  .quad .L2                       |
+                                jmp .L2                     |                                  .quad .L2                       |
+                              .L14:                         |                                  .quad .L2                       |
+                                add DWORD PTR [rbp-4], 2    |                                  .quad .L2                       |
+                                jmp .L2                     |                                  .quad .L2                       |
+                              .L15:                         |                                  .quad .L2                       |
+                                add DWORD PTR [rbp-4], 1    |                                  .quad .L2                       |
+                                jmp .L2                     |                                  .quad .L2                       |
+                              .L12:                         |                                  .quad .L2                       |
+                                add DWORD PTR [rbp-4], 3    |                                  .quad .L2                       |
+                                jmp .L2                     |                                  .quad .L2                       |
+                              .L18:                         |                                  .quad .L2                       |
+                                add DWORD PTR [rbp-4], 21   |                                  .quad .L2                       |
+                                jmp .L2                     |                                  .quad .L2                       |
+                              .L17:                         |                                  .quad .L2                       |
+                                add DWORD PTR [rbp-4], 22   |                                  .quad .L2                       |
+                                jmp .L2                     |                                  .quad .L2                       |
+                              .L19:                         |                                  .quad .L2                       |
+                                add DWORD PTR [rbp-4], 23   |                                  .quad .L2                       |
+                                jmp .L2                     |                                  .quad .L2                       |
+                              .L7:                          |                                  .quad .L2                       |
+                                add DWORD PTR [rbp-4], 3    |                                  .quad .L2                       |
+                                jmp .L2                     |                                  .quad .L2                       |
+                              .L8:                          |                                  .quad .L2                       |
+                                add DWORD PTR [rbp-4], 4    |                                  .quad .L2                       |
+                                jmp .L2                     |                                  .quad .L2                       |
+                              .L5:                          |                                  .quad .L2                       |
+                                add DWORD PTR [rbp-4], 5    |                                  .quad .L2                       |
+                                jmp .L2                     |                                  .quad .L2                       |
+                              .L11:                         |                                  .quad .L2                       |
+                                add DWORD PTR [rbp-4], 6    |                                  .quad .L2                       |
+                                jmp .L2                     |                                  .quad .L2                       |
+                              .L9:                          |                                  .quad .L2                       |
+                                add DWORD PTR [rbp-4], 8    |                                  .quad .L2                       |
+                                jmp .L2                     |                                  .quad .L2                       |
+                              .L10:                         |                                  .quad .L2                       |
+                                add DWORD PTR [rbp-4], 9    |                                  .quad .L2                       |
+                                jmp .L2                     |                                  .quad .L2                       |
+                              .L3:                          |                                  .quad .L2                       |
+                                add DWORD PTR [rbp-4], 10   |                                  .quad .L2                       |
+                                jmp .L2                     |                                  .quad .L2                       |
+                              .L16:                         |                                  .quad .L2                       |
+                                add DWORD PTR [rbp-4], 11   |                                  .quad .L2                       |
+                                nop                         |                                  .quad .L2                       |
+                              .L2:                          |                                  .quad .L2                       |
+                                nop                         |                                  .quad .L2                       |
+                                leave                       |                                  .quad .L2                       |
+                                ret                         |                                  .quad .L2                       |
+                                                            |                                  .quad .L2                       |
+                                                            ++                                 .quad .L2                       |
+                                                                                               .quad .L2                       |
+                                                                                               .quad .L2                       |
+                                                                                               .quad .L2                       |
+                                                                                               .quad .L2                       |
+                                                                                               .quad .L2                       |
+                                                                                               .quad .L2                       |
+                                                                                               .quad .L2                       |
+                                                                                               .quad .L2                       |
+                                                                                               .quad .L2                       |
+                                                                                               .quad .L2                       |
+                                                                                               .quad .L2                       |
+                                                                                               .quad .L2                       |
+                                                                                               .quad .L2                       |
+                                                                                               .quad .L2                       |
+                                                                                               .quad .L2                       |
+                                                                                               .quad .L2                       |
+                                                                                               .quad .L12                      |
+                                                                                               .quad .L13                      |
+                                                                                               .quad .L14                      |
+                                                                                               .quad .L15                      |
+                                                                                               .quad .L16                      |
+                                                                                               .quad .L17                      |
+                                                                                             .L12:                             |
+                                                                                               add DWORD PTR [rbp-4], 2        |
+                                                                                               jmp .L2                         |
+                                                                                             .L13:                             |
+                                                                                               add DWORD PTR [rbp-4], 1        |
+                                                                                               jmp .L2                         |
+                                                                                             .L14:                             |
+                                                                                               add DWORD PTR [rbp-4], 3        |
+                                                                                               jmp .L2                         |
+                                                                                             .L15:                             |
+                                                                                               add DWORD PTR [rbp-4], 21       |
+                                                                                               jmp .L2                         |
+                                                                                             .L16:                             |
+                                                                                               add DWORD PTR [rbp-4], 22       |
+                                                                                               jmp .L2                         |
+                                                                                             .L17:                             |
+                                                                                               add DWORD PTR [rbp-4], 23       |
+                                                                                               jmp .L2                         |
+                                                                                             .L3:                              |
+                                                                                               add DWORD PTR [rbp-4], 3        |
+                                                                                               jmp .L2                         |
+                                                                                             .L5:                              |
+                                                                                               add DWORD PTR [rbp-4], 4        |
+                                                                                               jmp .L2                         |
+                                                                                             .L6:                              |
+                                                                                               add DWORD PTR [rbp-4], 5        |
+                                                                                               jmp .L2                         |
+                                                                                             .L7:                              |
+                                                                                               add DWORD PTR [rbp-4], 6        |
+                                                                                               jmp .L2                         |
+                                                                                             .L8:                              |
+                                                                                               add DWORD PTR [rbp-4], 8        |
+                                                                                               jmp .L2                         |
+                                                                                             .L9:                              |
+                                                                                               add DWORD PTR [rbp-4], 9        |
+                                                                                               jmp .L2                         |
+                                                                                             .L10:                             |
+                                                                                               add DWORD PTR [rbp-4], 10       |
+                                                                                               jmp .L2                         |
+                                                                                             .L11:                             |
+                                                                                               add DWORD PTR [rbp-4], 11       |
+                                                                                               nop                             |
+                                                                                             .L2:                              |
+                                                                                               nop                             |
+                                                                                               leave                           |
+                                                                                               ret                             |
+________________________________________________________________________________________________________________________________________________________________________________________
+
+1. if there is less number of swith cases compiler go for conditional jump rather than jump tables.
+
+2. if there is  more number of switch cases with continuous values , compiler go for jump table rather than conditional jump.
+
+3. if there is more number of swithc cases with continuous values with collapsec order , still compiler goes for jump tables 
+
+4. if there is continuous values and one or more values are larger than continuous values, still compiler goes for jump tables with lot of jump table entries.
+   so we have to keep the switch cases in gradual increment order for optimized code
+
+5. if there is swithc cases with collapsed gradual values and haver continuous sudder higher value , it will go for conditional jump
+
+6. if there is gradual values with gradual increment and sudder values with continuous gradual increment , it will go for jump tables.
+   jump table will be ralatively large , so don't use sudden higher gradual cases in swithc cases.
+
+7. order of switch cases does not affect the performance of the swithc case statements.
+
+8. if the switch case values are continuous , the code will be optimized and run faster.
+
+9. if the switch case values are random , then the code will not be optimized for performance.
+
+10. sudden higher values also affects the performance.
+_________________________________________________________________________________
+
+ lot of continous switch case values:	jump table
+
+           random switch case values: 	condition jump - ( if else style )
+
+             small continuous values: 	conditional jump 
+              ( less than 4 cases )
+
+             collapsed - continuous :	 jump table
+
+                  collapsed - random: 	conditional values
+
+     sudden huge gradual continuous : 	conditional jump
+_________________________________________________________________________________________________________________________________________________________________________________________
+
+
+

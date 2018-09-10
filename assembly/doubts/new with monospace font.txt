@@ -1,0 +1,510 @@
+font-name: consolas |
+--------------------'
+
+_______________________________________________________________________________________________________________________
+
+what is unicode?
+----------------
+
+ codepoint       character      utf-8          utf-16         utf-32
+  65                 A          
+  
+utf-8 , uft-16 , utf-18 are different ways of storing 65 in binary.
+
+
+unicode is a character set 
+utf-8 , utf-16 , utf-32 are different way to encode the unicode character set.
+  
+
+UTF- Unicode Transformation Format
+UCS- Universal Character Set
+
+unicode is a universal character set.
+
+unicode is started with 2 byte fixed width character set UCS-2. it uses 2 bytes only.
+it can address only upto 2^16 combinations.
+
+chracters are mapped to integer.
+
+unicode defines set of characters with corresponding intergers for them.
+the ASCII values 0-127 is same in unicode as well.
+this gives backward compatability.
+
+unicode --> planes -- BMP --> Basic multilingual Plane -----------> 2^16 --> 65,536 code points.
+                  |-- SMP --> Supplementary multilingual plane
+                  |-- SIP --> Supplementary Ideographic plane -----> symbols that represents some idea or concept			  
+                  |-- Supplementary Special Use plane
+				          |-- Private User Planes
+				  
+each plane can hold upto 2^16 characters ==> 65,536
+
+unicode has 17 planes. so 17 * 65,536 = 11 , 14 , 112
+
+0 th plane - BMP
+1 st plane - SMP
+2 nd plane - SIP
+3 rd - 13 unassigned 
+plane 14 - Supplementary special Use Plane
+plane 15,16 - Supplementary private use planes
+
+2048 - surrogates
+66 - non characters
+11,14, 122 - characters
+so there are 11,14,122 valid code points
+
+
+Code Point Declaration: U+ HexaDecimal value of the code point
+
+                        U+FEFF --> 65,279
+                        
+						
+A  - 65 
+A  - character
+65 - code point or code page.
+
+unicode can be  implemented by different encodings.
+
+                            |-----  utf-8  -- 01001101 - binary code point.
+                       A -- |-----  utf-16 -- 00000000 01000001
+                            |-----  utf-32 -- 00000000 00000000 00000000 01000001
+ 
+default encoding of HTML5 is UTF-8
+
+  .------,   .-------.   .------------.   .----------.
+  | A    |---| UTF-8 |---| TEXT EDITOR|---| 01001101 |
+  ````````   `````````   ``````````````   ````````````
+                                           Hard Disk
+										   
+  .------,   .-------.   .------------.   .-------------------.
+  | A    |---| UTF-16|---| TEXT EDITOR|---| 00000000 01001101 |
+  ````````   `````````   ``````````````   `````````````````````
+                                           Hard Disk									   									   										   
+  .------,   .-------.   .------------.   .-------------------------------------.
+  | A    |---| UTF-32|---| TEXT EDITOR|---| 00000000 00000000 00000000 01000001 |
+  ````````   `````````   ``````````````   ```````````````````````````````````````
+                                           Hard Disk									   
+										   
+										   
+text-editor must be aware of what encoding to use.Else it won't display what the file was meant to be.
+							
+the below diagram shows how various encodings represent character 'A'
+															
+   unicode charset 	             encoding    representation in binary
+								
+   		                      |--- UTF- 8	 --- 01001101 - A					   
+  .-----------------.		    |						 		   
+  | A = 65 , B = 66 |-------|--- UTF- 16 --- 00000000 01000001 - A
+  |    charset      |       |
+  ```````````````````       |--- UTF- 32 --- 00000000 00000000 00000000 01000001 - A 
+  
+  so different encodings represent the same code point of a character set differently in binary.
+  
+________________________________________________________________ 
+ 
+ UTF-8
+ -----
+* it is variable width encoding
+* it may take one or upto 4 bytes per character
+* UTF-8 is backwards compatible with ASCII.
+* file size is lesser when we use ASCII.
+  because it takes  only one byte for ASCII characters
+* optimized file size.
+* UTF-8 is the preferred encoding for e-mail and web pages
+* it has higher complexity than UTF-16 and UTF-32
+* don't need to specify ENDIANESS
+* it may take upto 6 bytes to specify all the unicode characters
+
+UTF-8 uses variable size byte orders, there can be more than one byte for a single character. so we have to specify in the first
+byte how many more bytes required to decode the chracter.
+
+convention
+---------- 
+0 and 1 below does't represent data.it is used for convention.
+ 
+for examble:
+------------
+   _________________________________
+  | 0 | x  | x | x | x | x | x | x  |  ---> we only have 7 bits to represent data
+   ``````````````````````````````````
+  so we can only represent only 2^7 combinations 0 - 127
+  so when UTF-8 parser parses a byte, it will neglect 0 and 1 and only take remaining bits for calculation.
+  
+  here it only takes7 bits because of MSB is 0.
+ 
+ 
+For One Byte Characters
+-----------------------
+   _________________________________
+  | 0 | x  | x | x | x | x | x | x  |  
+   ``````````````````````````````````
+if MOST SINGIFICANT BIT is zero then , the it is single byte chracter.so we need not fetch any further bytes.
+
+
+
+For Two Byte Characters
+-----------------------
+
+ the first two bits in first bytes are 
+   _________________________________    ______________________________
+  | 1 |  1 | 0 | X | X | X | X | X  |  | 1 | 0 | X | X | X | X | X| X | --> we only have 11 bits to represent data.
+   ``````````````````````````````````  ````````````````````````````````
+            Leading Byte                      Continuation Byte
+			
+ so we can represent upto 2^11 combinations in Two byte in UTF-8
+			
+For Three Byte Characters
+-------------------------
+   _________________________________   ______________________________
+  | 1 |  1 | 1 | 0 | X | X | X | X  |  | 1 | 0 | X | X | X | X | X| X |  
+   ``````````````````````````````````  ````````````````````````````````
+   
+   _________________________________    
+  | 1 |  0 | X | X | X | X | X | X  |   - we only have  16 bits , so we can only represent upto 2^16 bits.
+   ``````````````````````````````````  
+  
+  
+  
+For Four Byte Characters
+------------------------
+   _________________________________    ______________________________
+  | 1 |  1 | 1 | 1 | 0 | X | X | X  |  | 1 | 0 | X | X | X | X | X| X |  
+   ``````````````````````````````````  ````````````````````````````````
+   
+   _________________________________    ______________________________
+  | 1 |  0 | X | X | X | X | X | X  |  | 1 | 0 | X | X | X | X | X| X |  
+   ``````````````````````````````````  ````````````````````````````````
+   
+   we only have 21 bits , so we can represent 2^21 combinations.
+ 
+ For Six Byte Characters
+ -----------------------
+   _________________________________    ______________________________
+  | 1 |  1 | 1 | 1 | 1 | 1 | 0 | X  |  | 1 | 0 | X | X | X | X | X| X |  
+   ``````````````````````````````````  ````````````````````````````````
+   
+   _________________________________    ______________________________
+  | 1 |  0 | X | X | X | X | X | X  |  | 1 | 0 | X | X | X | X | X| X |  
+   ``````````````````````````````````  ````````````````````````````````
+  
+   _________________________________    ______________________________
+  | 1 |  0 | X | X | X | X | X | X  |  | 1 | 0 | X | X | X | X | X| X |  
+   ``````````````````````````````````  ````````````````````````````````
+   
+   we only have 31 bits , so we can represent 2^31 combinations.
+   
+ 
+ for single byte characters, the byte starts with 0 - 7 bits - 127
+ for two    byte characters, the byte starts with 1 1 0 - 11 bits - 2047
+ for three  byte characters, the byte starts with 1 1 1 0 - 16 bits -65535
+ for four   byte characters, the byte starts with 1 1 1 1 0 - 21 bits - 2,097,151
+ for five   byte characters, the byte starts with 1 1 1 1 1 0 - 2^26 bits - 67,108,863
+ for six    byte characters, the byte starts with 1 1 1 1 1 1 0 - 2 ^ 31 bits - 2,147,483,647
+ 
+ continuation byte starts with 1 0
+ 
+ what if a byte starts with 7 ones  ( it happens when we have seven byte characters ) 
+   _______________________________   
+  | 1 |  1 | 1 | 1 | 1 | 1 | 1| 0 |  ----> 2 5 4 it is used in bom , so we can't have it.
+  ````````````````````````````````` 
+  so we can't have above byte sequence in  unicode.
+   
+________________________________________________________________
+ 
+UTF-16
+------
+* variable width encoding
+* it can use 2 bytes or 4 bytes per character
+* it can use one junk of 16 bits or two junk of 16 bits
+* it is not backward compatible with ASCII
+  because it uses minimum 2 bytes.
+* it has balanced file size and balanced decoding complexity
+* we have to specify ENDIANESS
+* upto  65,535 it uses single 16 bits ( 0xFFFF )
+* from 65,536 (0x10000)  to 1,114,111 (0x10FFFF )it uses two 16 bits
+
+ 16 bit unit is called as surrogates
+ low surrogate and high surrogate
+ 
+  code points U+D800 to U+DFFF ( 55,296 to 57,343 ) are reserved for surrogates.
+ 
+                       surrogate
+   ________________________________________________________________                       D800    DBFF
+  | 1 |  0 | X | X | X | X | X | X  | x | x | X | X | X | X | X| X |  - high surrogate ( 55,296 - 56,319 ) 1024 code points
+   `````````````````````````````````````````````````````````````````
+   ________________________________________________________________                       DC00     DFFF
+  | 1 |  0 | X | X | X | X | X | X  | x | x | X | X | X | X | X| X |  - low surrogate  ( 56,320 - 57,343 ) 1024 code points
+   `````````````````````````````````````````````````````````````````
+   
+   upto oxFFFF ( 65 ,535 ) there is no need for another 16 bits , so everything works fine.
+   but what about 65 , 536 - Ox10000 ? we have to specify it in two sixteen bits.
+   
+so how to convert code point above 65,535 to UTF-16?
+let's consider a code point U+10437 - 66,615
+now subract 0x10000 from 65 , 536
+
+
+
+66,615  U+10437 
+65,536  U+10000
+------ 
+ 01079  0x00437  --> 0000 0000 0100 0011 0111
+------
+ 
+ divide it into 10 bits.  0000 0000 01    and   00 0011 0111
+ 
+ add 0xD800 ( 55,296 ) to the first half  ( high surrogate  - 0000 0000 01 )
+ add 0xDC00 ( 56,320 ) to the second half ( lower surrogate - 00 0011 0111 )
+ 
+ 55296 + 1  = 55297 = 0xD801
+ 56320 + 55 = 56375 = 0xDC37
+                                 1101 1000 0000 0001 1101 1100 0011 0111 -- this is how we represent 66,615
+________________________________________________________________
+ 
+ UTF-32
+ ------ 
+* fixed width encoding scheme
+* each 32 bit value represents one unicode point
+* it takes 4 bytes even for ASCII characters
+* it takes 4 bytes instead of 1 byte while comparing with UTF-8
+* it takes 4 bytes instead of 2 bytes while comparing with UTF-16
+* if we use utf-32 the file size will be larger.
+* as it takes constant byte value for all chracters we can increment and decrement to get the next and previous
+  characters respectively
+* it will take only simple algorithm to decode the UTF-32 encoding because of it's constant size for all 
+  characters
+* it does't have backward  compatibility with ASCII becoz it uses minimum 4 bytes.
+* we can tell the number of characters in a file by seeing it's file size.
+* one to one mapping , easy decoding
+* we have to specify ENDIANESS
+
+ ___________________________________________________________________________________________________________________________________
+ | x |  x | X | X | X | X | X | X  | x | x | X | X | X | X | X| X |  x | x |  x | X | X | X | X | X | X  | x | x | X | X | X | X |X |  
+ ````````````````````````````````````````````````````````````````````````````````````````````````````````````````````````````````````
+
+ representation of A in UTF-32
+ 
+ 0000 0000   0000 0000   0000 0000   0100 0001
+ ---------   ---------   ---------   ---------
+ 4'th byte   3'rd byte   2'nd byte   1'st byte
+ 
+ ___________________________________________________________________________________________________________________________________
+ 
+what is byte order?
+-------------------
+Byte order is the order the bytes stored in hard disk that represents a single character.
+
+what is BOM?
+------------
+
+BOM is a unicode character.
+
+it is also called as unicode signature.
+
+BOM - Byte order mark
+LE - Stands for litte Endian
+BE - Stands for Big Indian
+
+for UTF-8 there is some convention to fetch how many bytes.
+for UTF-32 character size is constant of 4 bytes.
+for UTF-16 there is two 16 bits unit.
+
+not using BOM allows old text editors that are not aware about unicode to represent file in ASCII.
+
+advantages of using bom
+------------------------
+it defines in which order bytes are stored in hard disk.
+it defines which endianness is used in the file.
+it assures this file is unicode.because unicode only contains bom.
+it tells which unicode encoding is used.
+
+ENDIANESS
+---------
+              LSB - Least Singificant BIT (right most bit )
+			  MSB - Most  Singificant BIT (left  most bit  )
+			  
+			  LE - Little Endian ( storing least singnificant byte in low memory address )
+			  BE - Big    Endian ( storing most  singnificant byte in low memory address ) ( normal hexadecimal format )
+
+
+          lets consider A - 65.
+		  lets see how it is stored in UTF-16 
+		  uft-16 uses minimum 16 bits store a value.
+		  
+		  so A can be stored as 0041 - 0000 0000 0100 0001 - Big Endian  ( in this form only we convert hex to other formats )
+		                               --------- ---------
+ 	 
+	 else    A can be stored as 4100 - 0100 0001 0000 0000 - Little Endian  
+                                       --------- ---------
+
+BOM use is optional, and, if used, should appear at the start of the text stream.
+
+in a file binary values of characters can be more than one byte.
+so the bytes can be stored in hard disk with MSB first or LSB first.
+
+when a text editor opens a file it have know in which encoging the file is written and which endianness it has.
+so that it can display characters correctly.
+
+ASCII uses 7 bits.so it has no Endianess problem. every byte represents a character.
+
+UTF-8
+-----
+utf-8 does not need BOM. because there is some convention in order of the byte so we can easily find out.
+eventhough there is bom byte sequence is there for UTF-8. unicode don't recommend it.because it is backward compatable with ASCII.
+so some old ASCII editor's will confuse if we use bom for utf-8
+
+U+EFBBBF
+
+EF BB BF - 11101111 10111011 10111111  - 15,711,167
+               1111   111011   111111  - 65,279
+
+UTF-16
+------
+in utf-16 two 16 bits are stored. so there is something to worry about order of the byte.
+
+U+FEFF
+
+FE FF - 1111 1110 1111 1111 - 65,279 - Big Endian
+FF FE - 1111 1111 1111 1110 - 65,534 - Little Endian
+
+
+UTF-32
+------
+00 00 FE FF - 0000 0000 0000 0000 1111 1110 1111 1111 - Big Endian
+FF FE 00 00 - 1111 1110 1111 1111 0000 0000 0000 0000 - Little Endian
+
+___________________________________________________________________________________________________________________________________
+Detecting encoding
+------------------
+
+UTF-8
+-----
+scan the every byte of the file , if it is less than 128 then it is encoded in ASCII
+if the 7 th bit of all the byte is not set then , it is ASCII
+uft-8 has some conventions , by checking leading byte , we can find how many continuation bytes are there.
+continuation bytes 7th bit will be 1
+continuation bytes 6th bit will be 0
+
+
+UTF-16
+------
+in uft-16 upto U+FFFF ( 65,535 ) code point is stored in single 16 bit unit.
+from 65 , 536 - U+10000 ( 65, 536 ) code point is stored in two single 16 bit unit.
+the two 16 bit unit is called as surrogates.surrogates are stored as higher surrogate first and lower surrogate next.
+the higher surrogate will range ( D800 - DBFF ) ( 55,296 - 56,319  ) ( 1024 )
+the lower surrogate will range  ( DC00 - DFFF ) ( 56,320 - 57,343  ) ( 1024 )
+
+fetch two byte , if decode it , if it is less than 55,296 then it is a single 16 bit. no need for fetch
+another 16 bit code.
+fetch two bytes , if it is more than 55,296 then fetch another byte then decode it using 32 bits.
+
+UTF-32
+------
+utf-32 is constant 4 byte encoding.so we check it by fetching a four bytes and decoding it.
+
+___________________________________________________________________________________________________________________________________
+
+what is the difference between static linking and dynamic linking?
+
+    
+  ---------------      ................      ..............      .................     .............    .............   ..........
+ | hello world.c |---- | preprocessor | ---- | C Compiler | ---- | Assembly code | ----| Assembler |----|object file|---| linker |
+  ```````````````      ````````````````      ``````````````       ````````````````     `````````````    `````````````   ``````````
+                                                                                                                             |
+																													                                                    ..................
+																											                                                       | Executable  File |
+                                                                                                              ------------------
+	
+ static linking
+ ---------------
+  ----------------	
+  | calculator.c | -- has convertIntoBinary( ) function which is in Binary Library( object file ).
+  ----------------
+  
+  so when we compile our program  calculator.c the code of the convertIntoBinary() function will be linked to our program
+  and a executable file is created called calculator.exe.
+  
+  when we run calculator.exe all codes are copied into ram. everything works fine.
+  
+  so when the library called Binary is updated we have again compile our program with the updated library.
+  so if the binary library is large in file size and we have lot of libraries to add to our program the file size gets
+  bigger then the whole program will need to copied into ram.
+
+  our_program + library1 + library2 + library3 = our_program.exe
+  
+  disadvantages
+  -------------
+  
+  we have to recompile our program when the libraries get updated.
+  file size gets larger in the ram, so we don't have space for other applications in ram.
+  
+  
+  dynamic linking
+  ---------------
+  ----------------
+  | calculator.c | -- has convertIntoBinary( ) function which is in Binary Library( object file ).
+  ----------------
+  
+   when we compile our program , the libraries will be in separated file.
+   so the exeutable file only have the main program code.
+   
+   when we run calculator.exe and when we about to use ConvertIntoBinary() function then only the function code will be
+   copied into ram and get executed.
+   
+   we don't need to recompile our program when the libraries are get updated. as libraries are in separated files we 
+   can replace the updated library with old library.
+   
+   calculator.exe  , library1 , library2 , library3
+   
+   
+                     Windows                              linux
+--------------------------------------------------------------------------------
+                 |                               |
+ Static Library  |  .lib ( library)              |        .a ( archive )
+ --------------------------------------------------------------------------------
+                 |                               |
+ Dynamic Library | .dll ( dynamic link library)  |         .so ( shared object )   
+   
+ ___________________________________________________________________________________________________________________________________
+ 
+ how signed intergers work in x86 assembly?
+
+
+ consider 7 bits only.
+
+ in ascii there are 2^7 combinations that is 128.
+
+ lets take 65 ,  0100 0001  in binary.
+
+ here computer understand only 0100 0001 only. 
+
+ so we can use it to represent character A or unsigned integer 65 or signed integer -64
+
+ so it's about how we interpret the binary data to our requirements.
+ 
+ binary is represented in two's complement.
+_____________________________________________________________________________________________________________________________________
+
+LineFeed  CarriageReturn  EndOfLine
+-----------------------------------
+
+Carriage Return  CR   0x0D   \r
+-------------------------------
+moves the cursor to the beginning of the line without advancing to the next line.
+
+| i am a line and i have cursor on beginning of the line.
+
+as you can see above line , the cursor is on the beginning of the line.
+
+
+Line Feed   LF   0x0A  \n
+-------------------------
+moves the cursor down to the next line without returning to the beginning of the line.
+
+
+End Of Line    EOF  0x0D0A  \r\n
+--------------------------------
+it is actually two ascii chracters and it is a combination of CR and LF characters.
+it moves the cursor both down to the next line and to the beginning of that line.
+
+__________________________________________________________________________________________________________________________________________
+

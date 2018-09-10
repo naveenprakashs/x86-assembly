@@ -1,0 +1,82 @@
+data instructions
+-----------------
+
+using fpu instructions we can store integer as floating point number and get floating point number as integers.
+we can find those instructions by using 'i' in the name of the instructions
+
+if the instruction has 'p' in it, it will pop register stack once
+
++------------------------------+
+|memory -->  fpu register stack|
++------------------------------+
+
+fld  -  fpu register stack <---- (floating point number) memory 
+        loads a floating point number from memory onto the top of the stack. 
+        The source may be a single, double or extended precision number or a coprocessor register.
+
+fild -  fpu register stack <---- (integer) memory 
+        reads an integer from memory, converts it to floating point and stores the result on top of the stack. 
+
+fld1 -  stores 1 on top of the stack
+fldz -  stores 0 on top of the stack
+
+
++------------------------------+
+|memory <--  fpu register stack|
++------------------------------+
+
+fst  -   stores the top of the stack (ST0) into memory.
+
+fstp -   stores the top of the stack (ST0) into memory and pop the stack once.
+
+fist -   converts the top of the stack to an integer and stores in memory.
+
+fistp -  converts the top of the stack to an integer and stores in memory and pops the TOS once.
+
+fxch -   exchanges the value of two fpu stack registers.
+
+ffree -  free up a fpu stack register by marking the register as unused or empty in fpu tag.
+
+
+
++---------------+
+|    addition   |
++---------------+
+
+src - source , it can be a number in memory
+
+fadd src - st0 + src 
+
+fadd dest , st0  -  here we can specify the destination.
+                    destination can be fpu register or memory location
+
+faddp dest -    dest = dest + 10 the pop the stack once
+faddp dest , st0 
+
+fiadd src -  st0 = st0 + (float) src
+             src must be integer in memory
+
+
+
++-----------+
+|subraction |
++-----------+
+
+*** if a instruction has destination as an operand result is stored in destination
+*** if a instruction has source , result is stored in st0
+*** each sub instruction has an opposite instruction that ends with 'r'
+
+fsub src  -   st0 = st0-src
+fsubr src -   st0 = src-st0
+
+fsub dest , src  -    dest = dest - st0
+fsubr dest , src -    dest = st0 - dest
+
+fsubp dest           -  dest = dest - st0
+fsubp dest , st0 
+fsubrp dest          -  dest = st0 - dest 
+fsubrp dest  , st0
+
+fisub  src -  st0 = st0 - (float)src
+fisubr src -  st0 = (float)src - st0
+

@@ -1,0 +1,109 @@
+Use of right shift and left shift operators 
+--------------------------------------------
+
+We can use right shift and left shift operators to divide or  multiply a number by 2.     
+ 
+Number = 2; 
+ 
+Number = Number << 1 ;              here the value of number is multiplied by 2  , now the value of Number is 4 
+ 
+Number = Number >> 1;           here the value of number is divided by 2 , now the value of Number is 2 
+____________________________________________________________________________________
+
+AND  
+---
+
+The AND instruction is used for supporting logical expressions by performing bitwise AND operation. The bitwise 
+AND operation returns 1, if the matching bits from both the operands are 1, otherwise it returns 0. 
+ 
+The AND operation can be used for clearing one or more bits. 
+We can clear particular bits we want using AND bitwise operator. 
+ 
+ mov  al , 15           ;     0000 1111 
+ and   al , 240         ;     1111 0000  
+                             -------------- 
+                               0000 0000      we cleared the least significant four bits of al register. 
+                             --------------- 
+  
+If you want to check whether a given number is odd or even, a simple test would 
+be to check the least significant bit of the number. 
+ 
+If the least significant bit of a number is 1 it is odd , if it is 0 then it is even number.  
+ 
+0000 0001   - 1 - odd 
+0000 0010   - 2 - even 
+0000 0011  -  3 - odd 
+0000 0100  -  4 – even 
+ 
+Trick:  when a result of a operation is zero , zero flag will be set. 
+  
+So we are going to AND the number we want to check with 0000 0001 , 
+ so if the least significant bit is zero then the result will be zero .  
+So the zero flag will be set. So we will check the zero flag and jump accordingly. 
+ 
+        mov  al , 2                  ;     0000 0010     |     result will be 0000 0000 so the zero will be set and it is even number 
+        AND  al , 1                  ;     0000 0001     | 
+        JZ even_number  
+_______________________________________________________________________________
+
+OR  
+--
+     The OR can be used to set the particular bits. 
+      
+      Lets consider that al has value of 0000 0001 then we want to set the four most significant bits. 
+ 
+       Mov al , 1 
+       OR al , 240 
+ 
+      AL register     :     0000 0001 
+     240 In binary:         1111 0000 
+                        ------------------- 
+                 Result      1111 0001         -- 241 , most four significant bits are set. 
+                        -------------------- 
+________________________________________________________________________________________________
+
+XOR 
+---
+
+      If the two bits are same result will be zero , if the two bits are different the result is 1. 
+      XORIng a  register with itself will clear the register ( value of the register will be set to zero) 
+ 
+      
+      Let's consider ax register has value of  00000000 11111111 
+ 
+       XOR ax ,ax 
+  
+                                             00000000 11111111 
+                                             00000000 11111111 
+                                          --------------------------------- 
+                                             00000000 00000000       -- ax is set to zero 
+                                         ---------------------------------- 
+__________________________________________________________________________________________________
+
+    TEST 
+    -----
+
+        It works same as AND but the result is not stored. 
+ 
+        When we do the AND the result will be stored in a register and flag will be set. 
+         In TEST instruction the flags only set and the result is neglected. 
+ 
+         Mov al , 1 
+         AND al , 0       ; here the al will be zero after the execution of the instruction. Flags are set accordingly. 
+  
+         Mov al ,1 
+         TEST al ,0       ; here the al will be 1 even after the execution of the instruction. Flags are set accordingly. 
+
+_____________________________________________________________________________________________________________________________
+     
+NOT 
+---
+
+NOT is used to reverse the bits in a register.  
+ Let's consider al has the value of zero in it. 
+ 
+ Mov al ,0  ; al is set to zero 
+ 
+ NOT al      ; al is set to 1111 1111 ( 15 in decimal )
+ _____________________________________________________________________________________________________________________________ 
+

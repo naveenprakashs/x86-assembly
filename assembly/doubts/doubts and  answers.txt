@@ -1,0 +1,415 @@
+font: consolas    |
+editor: notepad++ |
+------------------|
+
+
+How CPU fetches instructions: 
+-----------------------------
+fetch - decode - execute
+
+
+IP or Program Counter  
+---------------------
+
+it points to the memory location of the next instruction to be executed.
+
+Memory address register
+
+Memory data register
+
+Current instruction register
+
+
+
+watch fetch-decode-execute cycle in youtube
+________________________________________________________________________________________________________________________________________________________
+
+------Instruction pointer points to the next instruction to be executed.But how many bytes the CPU will fetch? ------
+
+It will fetch only one byte and decode it and it has some algorithms to decide how many more bytes to fetch to complete the instruction.
+________________________________________________________________________________________________________________________________________________________
+
+english has only 26 letters , and we can write a book with 26 letters. likewise CPU has less number of instructions and it can write operating system 
+and other softwares.
+________________________________________________________________________________________________________________________________________________________
+
+CISC -- complex instruction set computation        - has lot of instructions            - variable instructions size
+RISC -- reduced instruction set computation        - has less number of instructions    - fixed instructions size
+________________________________________________________________________________________________________________________________________________________
+
+clock speed - number of cycles per second
+
+________________________________________________________________________________________________________________________________________________________
+
+----what is inside Executables files like .exe----
+
+
+________________________________________________________________________________________________________________________________________________________
+
+----what is wrong with one's complement?----
+
+one's  complement is used when we want to represent a negative number in binary number system. because in decimal number system it is simple that
+we use '-' sign to represent a negative number. but in binary we can't do that. 
+so we use a system called one's complement.
+
+one's complement also has problems with binary arithmetic. ( just refer google )
+
+Notation     Min   Max
+==========  ====  ====
+Unsigned:      0   255
+One's Comp: -127  +127         ---> one's complement has positive and negative zero
+Two's Comp: -128  +127         ---> two's complement has only positive zero
+
+
+
+one's complement   
+
+0000 0000  --> represents positive zero
+swapping bits with their opposits
+1111 1111  --> represents negative zero    (one's complement)
+
+two's complement
+
+0000 0000  --> represents positive zero
+1111 1111  --> one's complement
+        1   
+---------
+0000 0000  --> represents positive zero    ( two's complement)
+---------   
+________________________________________________________________________________________________________________________________________________________
+various parts of CPU
+````````````````````
+control unit
+arithmetic and logical unit
+memory management unit
+________________________________________________________________________________________________________________________________________________________
+
+general registers   |
+control register    |  these registers only hold data or address
+segment registers   |
+
+
+current instruction register or instruction pointer |
+current data register                               | the registers are used to fetch actual program code
+memory data register                                | the above 3 registers are used to hold data or address
+memory address register                             |
+________________________________________________________________________________________________________________________________________________________
+--------how computer subract two numbers?-----------
+
+computer only know how to add two numbers.
+when we do +3-1      ,  -1 is converted into two's complement
+we have to change it to two's complement , bcoz in decimal number system we human uses ' - ' .
+but computer only understand 1's and 0's. so we convert -1 into it's corresponding binary value.
+then the computer adds two numbers. so for a positive number we don't have to worry. but for neagative number we have to 
+use two's complement notation.
+
+4 bit addition and subraction
+
++ 3 - 1
+
++3        0011
++1        0001  -->  two's complement 1110 --> 1111
+                      
+					  carry               1  1  1
+so we do  +3 + ( -1 ) -->                 0  0  1  1
+                                          1  1  1  1  
+										  ----------
+								        1 0  0  1  0   --> as it's 4 bit , the 5'th bit is lost. so  0010 --> 2
+									   -------------
+________________________________________________________________________________________________________________________________________________________
+----consider 4 bit . 1111 represents 15 but if we tried to take one's complement for 15 like 0001 it points to one. so the problem is
+we are trying to accomplish 32 combinations out of 16 combinations. ---
+
+as we have 4 bits we can only have 2^4 combinations that is 16. so we can use this 16 combinations for unsigned  or 8 for singned and another 8 for insigned.
+
+8 bit
+````````
+0000 1111  ->  15
+
+1111 0000
+              1
+1111 0001  -> -15  ( two's complement ) works fine
+_____________________________________________________________________________________
+4 bit
+````````
+1111 --> 15
+0000 
+      1 
+0001 --> 1 ( it represents 1 instead of -15 ) here we have problem
+
+combinations  |   unsigned    |      signed
+--------------------------------------------
+0000  -  1                  0                  0
+0001  -  2                  1                  1
+0010  -  3                  2                  2
+0011  -  4                  3                  3
+0100  -  5                  4                  4
+0101  -  6                  5                  5
+0110  -  7                  6                  6
+0111  -  8                  7                  7
+1000  -  9                  8                 -8
+1001  -  10                 9                 -7
+1010  -  11                10                 -6
+1011  -  12                11                 -5
+1100  -  13                12                 -4
+1101  -  14                13                 -3
+1110  -  15                14                 -2
+1111  -  16                15               -  1
+
+
+we can have 16 different combinations , 
+we can use it to represent 16 positive numbers or 16 negative numbers
+or 8 positive and 8 negative numbers.
+
+0 to +15             all for positive numbers                          unsigned interger
+-15 to 0             all for negative numbers                          it is not used , bcoz it is of no use
+-8 to 0 to +7        half for positive and half for negative           signed interger
+
+4 bits --> 2^4 =16 = 8 combinations + 8 combinations
+first 8 combinations represents positive numbers
+second 8 combinations represents negative numbers
+
+0 - 7 --> first 8 combinations --> represents 0 to +7
+8 - 15 --> second 8 combinations --> represents -8 to -1
+
+-----how to find two's complement of a number easily------
+
+2^(number of bits ) - the number we want to take two's complement
+
+for finding neagative representation of 5 in 4 bit ,    2^4 - 5 = 16-5 = 11 = -5   in signed system  of 4 bit   11 = 1011
+                                                  
+												   
+for finding neagative representation of 6 in 4 bit ,  2^4 -6 = 16 - 6 = 10 = 1010 = -6
+
+for finding neagative representation of 0 in 4 bit  2^4-0 = 16-0 = 16 --> we can't represent 16 in 4 bits because we can only address upto 15 , bcoz of '0'
+16 ---> 1 0000 --> in 4 bits we can only hold 4 bits , so here representation of 0 in binary is 0000
+
+this method is calculating the maximum number of combinations and subracting the number from the total number of combinations
+____________________________________________________________________________________________________
+so in 32 bit processor , we can have ( 2^32 ) = 4 294 967 296  
+
+four billion, two hundred ninety-four million, nine hundred sixty-seven thousand, two hundred ninety-six = 4 294 967 296
+
+so we can have 4 294 967 296 positive numbers     unsigned integer
+
+ -2,147,483,648 - 0 - 2,147,483,647      signed interger
+ ________________________________________________________________________________________________________________________________________________________
+---binary arithmetic---
+
+
+---binary addition----
+
+we have to add from the rightmost
+
+1 + 1 = 10 = 0 + carry 1
+0 + 1 = 1
+1 + 0 = 1
+0 + 0 = 1
+
+when it's come to 1 + 1 = 10 we put 0 and carry 1
+when it's come to 1+1+1 = 11 we put 1 and carry 1
+when it's comes to 1 + 1 + 1 + 1 = 100 we put 0 and carry 10
+when its comes to 1 + 1 + 1 + 1 +1 = 101 we put 1 and carry 10
+when its comes to 1 + 1 + 1 + 1 + 1 + 1 = 110 we put 0 and carry 11
+
+carry --> the last digit becomes carry
+
+     11   10         <----carry
+     1     1     1
+	 1     1     1
+	 1     1     1
+	 1     1     1
+ ------------------
+    111  0      0
+--------------------
+
+_____________________________________________________________________________________
+
+ ----binary subraction----
+ 
+1 - 1 = 0
+1 - 0 = 1
+0 - 0 = 0
+0 - 1 = 1             // with borrow of 1
+
+we are going to do   0 - 1
+
+0000   --> 0
+0001   --> 1
+------
+1111  ----> -1
+-------
+ 
+ as we know we are going to subract first the right most digit. so we can't subract 1 from 0. so we borrow
+ one from the near digit. we can't borrow bcoz it's also has 0. so we go the left most digit and borrow on for it.
+ so the left most digit becomes 10. from that we borrow 1 for next digit. then it becomes 10.
+ 
+ when we borrow from 10 it becomes 1 and the one who borrow ( 0 ) becomes 10.
+ 
+10  0  0  0              1  10   0  0           1  1  10  0         1  1  1  10            1   1   1  10
+ 0  0  0  1              0   0   0  0           0  0   0  1         0  0  0   1            0   0   0  1
+ ------------            -------------         -------------      --------------         ----------------
+                                                                                          1   1    1    1     ---> -1 
+																		                                                      ----------------
+we are going to do 4 - 2																									  
+																											  
+0 1 0 0  --> 4
+0 0 1 0  --> 2
+--------
+
+0   1   0   0      0  0  10  0     0  0  10  0    
+0   0   1   0      0  0   1  0     0  0   1  0   
+-------------   --------------   ------------
+                                   0  0   1  0   --> 2
+                                  -------------
+_____________________________________________________________________________________
+----binary multiplication----
+
+ 1 * 1 = 1
+ 1 * 0 = 0
+ 0 * 1 = 0
+ 0 * 0 = 0
+                                                                             1  0  1  0             ---> 10
+																			                                       1  0  1  1             ---> 11
+													                                        ----------------------
+                                                                            1  0  1  0
+															                                           1  0  1  0
+                                                                      0  0  0  0
+                                                                   1  0  1  0
+                                                            ------------------------------
+											                                             1  1  0   1 1  1  0             --->       110
+                                                            -------------------------------
+________________________________________________________________________________________
+---binary division---
+
+we just apply the addition , subraction  and multiplication concepts to do binary division.
+ 
+100 / 10                                       
+                                                10    --> quotient
+                                         10   | 100
+                                              | 100
+												                      -----
+                                                  0     --> remainder
+													
+________________________________________________________________________________________________________________________________________
+----How does the processor know we are using one's complement or two's complement for representing neagative numbers?----
+
+x86 has native support for two's complement. so when we represent negative numbers it automatically assumes it is two's complement.
+ when representing negative numbers sign bit is set. so the processor can understand it is negative number . so when the sign bit is set 
+ it will automatically recognizes the size of the given number and  calculates it two's complement.
+ 
+ the x86 assembly instructions takes care of most of the sign conversion and give it to the cpu. 
+__________________________________________________________________________________________________________________________________________
+----How many bits are required to store a pixel?----
+
+it deponds on the depth of the pixel.if we want the pixel to display black and white single bit is enough.
+1 - white
+0 - black
+
+a single bit represent 2 states. 
+
+1 bpp	2 colors
+2 bpp	4 colors
+3 bpp	8 colors
+4 bpp	16 colors
+5 bpp	32 colors
+6 bpp	64 colors
+7 bpp	128 colors
+8 bpp	256 colors
+10 bpp	1024 colors
+16 bpp	65536 colors
+24 bpp	16777216 colors (16.7 million colors)
+32 bpp	4294967296 colors (4294 million colors)
+ 
+ Size of an image = rows * cols * bpp
+                            = 1024 * 1024 * 8
+                            = 8388608 bits.
+                            = 1 MB
+________________________________________________________________________________________________________________________________________________________
+----what is character encoding?----
+
+consider that in a harddisk or in main memory , there is sequence of 1's and 0's. ( because they can only store 1's and 0's indicating on and off.)
+
+consider that the sequence are ' 0100 0001 '
+now it can represent anything like ASCII character 'A'	 or unsigned number '65' or we can represent it how we want.
+
+the way we represent characters in binary is encoding.
+
+  A    - 65 -    0100 0001
+
+The interpretation of binary pattern is called data representation or encoding.
+________________________________________________________________________________________________________________________________________________________
+----what is the difference between ASCII and ANSI ?----
+
+old web - ASCII
+from HTML 2.0 to HTML 4.01, ISO-8859-1 was considered the standard.
+With XML and HTML5, UTF-8 finally arrived, and solved a lot of character encoding problems.
+
+ASCII was the first encoding charset
+ASCII  - American Standard Code for Information Interchange
+ASCII uses 7 bits ( one bit for parity control ), 2^7 = 128-1 = 127
+0-31 --> device control characters
+48-57 --> 0 - 9
+65-90 ---> A - Z
+97-122 --> a-z
+ASCII was earliest web character encoding
+
+ANSI  - American National standard Institute 
+ANSI is extension to ASCII
+ANSI uses 8 bits , so 2^8 = 256 -1 = 255 
+the first 0-127 character are same as ASCII
+128-255 --> some new symbols and latin characters are added.
+
+ANSI = ASCII + extra characters and symbols
+
+UTF - Unicode Transfomation Format
+
+                              |-----  utf-8 --  01001101
+                       A --   |-----  utf-16 -- 00000000 01000001
+                              |-----  utf-32 -- 00000000 00000000 00000000 01000001
+							  
+unicode is character set and it defines a single huge character set, assigning one unique integer value to every graphical symbol
+
+UTF-8 , UTF-16 , UTF-32  are character  encoding that encodes unicode characters.
+
+                                      UTF-8
+UTF-8 - variable length - uses 1 to 4 bytes per character- file size optimized - 8 -16 -24 - 32
+it takes minimum 1 byte ie 8 bits.
+A character in UTF8 can be from 1 to 4 bytes long
+UTF-8 can represent any character in the Unicode standard.
+UTF-8 is backwards compatible with ASCII.
+UTF-8 is the preferred encoding for e-mail and web pages
+ A - UTF-8  - 01001101
+                                 
+								      UTF-16
+UTF-16  variable length -  uses 2 or 4 bytes per character - balanced  - 16 -32-we have to know byte order-endianess
+it takes minimum 2 bytes
+it does't have backward  compatibility with ASCII becoz it uses minimum 2 bytes.
+windows uses UTF-16
+A - UTF-16  - 00000000 01000001
+             
+			                          UTF-32
+UTF-32 -fixed length - file size is bigger - best for performance - 32-we have to know byte order-endianess
+it will take  only simple algorithm bcoz of it's fixed size.
+it does't have backward  compatibility with ASCII becoz it uses minimum 4 bytes.
+A -UTF-32 - 00000000 00000000 00000000 01000001
+we can tell the number of character in a file if it uses UTF-32 encoding. because every character takes 4 bytes.
+________________________________________________________________________________________________________________________________________________________
+----what is the difference between charset and character encoding?----
+
+1. charset  defines the characters with their corresponding numerical values.
+
+2. encoding is the way these characters are stored into memory in binary.
+
+character sets translates characters into numbers.
+encoding translates that numbers to binary. 
+
+examble:
+                                   charset --> character --> number              h - 104 , e -101 , 
+								   encoding --> number  --> binary                 104 - 01101000  , 101 - 01100101				
+
+                                   unicode is a charset
+                                   UTF-8 ,UTF-16 , UTF-32 is a character encoding that implements unicode charset
+________________________________________________________________________________________________________________________________________________________
+
+

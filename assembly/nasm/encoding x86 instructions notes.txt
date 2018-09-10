@@ -1,0 +1,517 @@
+designing instruction set for a processor
+-----------------------------------------
+
+* we have to make opcodes simple to decode
+
+* we have to keep the opcodes small
+
+* most frequently used instruction will have single byte opcodes
+
+* less frequently used instruction will have two byte opcodes
+
+* rarely used instructions will have three byte opcodes
+
+
+
+encoding x86 instruction 
+------------------------
+
+format:
+-------
+
+prefix-byte  opcode  mod-reg-r\m  sib  displacement immediate
+    4          2          1        1        4           4        = 16 byte
+
+
+                               +--------------+--------+-------------+-----+--------------+----------+
+                               |  prefix|byte | opcode | mod|reg|r\m | sib | displacement | immediate|
+                               +---------------------------------------------------------------------+
+                               |      4       |   2    |     1       |  1  |     4        |   4      |
+                               +------+-------+----+---+-------+-----+--+--+-----+--------+----+-----+
+                                      |            |           |        |        |             |
+                                      |            |           |        |        |             +-----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------+
+                                      |            |           |        |        +--------------------------------------------------------------------------------------------------------------------------------------------------+                                              |
+                                      |            |           |        +----------------------------------------------------------------------------------------------------------+                                                |                                              |
+                                      |            |           |                                                                                                                   |                                                |                                              |
+                                      |            |           +--------------------------------------------------------------------------------------+                            |                                                |                                              |
+                                      |            |                                                                                                  |                            |                                                |                                              |
+   +----------------------------------+            |                                                                                                  |                            |                                                |                                              |
+   |                                               |                                                                                                  |                            |                                                |                                              |
+   |                                               +------------------------------------------------------------------+                               |                            |                                                |                                              |
+   |                                                                                                                  |                               |                            |                                                |                                              |
++--+---------------+----------------------+----------------------+--------------------+              +--------------------------------+     +-----+---+-----+----------+    +------+-----+----------+--------------+    +-----------+-------------------------+    +---------------+-----------------+
+|nstruction prefix |  address size prefix |  operand size prefix |   segment override |              |  0000 1111 0F  |   opcode      |     | mod |   reg   |   r/m    |    | scale      | index    |    base      |    |          displacement               |    |           immediate             |
++-------------------------------------------------------------------------------------+              +--------------------------------+     +--------------------------+    +--------------------------------------+    +-------------------------------------+    +---------------------------------+
+|        1byte     |          1byte       |            1byte     |        1byte       |              |        1byte   |      1byte    |     |2 bit| 3 bits  | 3 bits   |    |   2 bits   |  3 bits  |    3 bits    |    |               4 byte                |    |             4 byte              |
++------------------+----------------------+----------------------+--------------------+              +----------------+---------------+     +---------------+----------+    +------------+----------+--------------+    +-------------------------------------+    +---------------------------------+
+                                                                                                                                                                                                                        
+
+prefix byte
+-----------
+it is used to change the behaviour of the instruction.
+it has four prefixes.
+each prefix is 1 byte of size.
+
+Prefixes can change the default segment of an instruction, override the default size of the machine-word,
+control looping in string instructions, and control the processor's bus usage.
+
+Group 1: LOCK, REPE/REPZ, REP, REPNE/REPN
+Group 2: CS, DS, ES, FS, GS, SS, Branch hints
+Group 3: Operand-size override (16 bit vs. 32 bit)
+Group 4: Address-size override (16 bit vs. 32 bit)
+
+The LOCK prefix (F0H) forces an operation that ensures exclusive use of shared memory in a multiprocessor envi-ronment
+
+The operand-size override prefix allows a program to switch between 16- and 32-bit operand sizes
+
+The address-size override prefix (67H) allows programs to switch between 16- and 32-bit addressing
+________________________________________________________________________
+
+opcode
+------
+
+from book: 64-ia-32-architectures-software-developer-vol-2a-manual : chapter 2 , instruction format
+
+A primary opcode can be 1, 2, or 3 bytes in length. An additional 3-bit opcode field is sometimes encoded in the
+ModR/M byte
+
+Smaller fields can be defined within the primary opcode. Such fields define the direction of opera-tion,
+size of displacements, register encoding, condition codes, or sign extension. Encoding fields used by an
+opcode vary depending on the class of operation
+
+opcode tells the processor which instruction to execute
+it can be one or two byte long
+two byte opcodes have 'OF' prefix byte
+
+bitfields
+---------
+opcodes has some special bit fields that specifies the size of operands , source and destination and some other things deponds on 
+the instruction.
+
+NOT  - 1111011w - w determines the operand size
+ OR  - 000010dw - w determines the operand size , d determines the source and destination
+ADD  - 000000dw - w determines the operand size , d determines the source and destination
+                  d = 0 , reg is source         , reg/m is destination
+                  d = 1 , reg is destination    , reg/m is source
+ADD -  000000xw - w determines the operand size
+                  x = 0 , immediate operand is 8 bit
+                  x = 1 , immediate operand is 8 bit it's going to sign extended
+______________________________________________________________________________________________________________
+
+mod-reg-reg/m
+--------------
+
+it determines the instructions operands and addressing modes relating to them.
+
+mod - 2 bit - 4 combinations
+reg - 3 bit - 9 combinations
+r\m - 3 bit - 9 combinations
+
+
+mod and r/m  specifies operand with addressing mode.
+
+reg alone specifies an operand.
+
+
+mod 
+----
+it specifies the addressing mode
+
+mod          meaning
+-------------------------------------
+00          [r\m + no   displacement]          
+01          [r\m + byte displacement]
+10          [r\m + word displacement]
+10          r\m
+
+
+reg
+----
+reg - it specifies a register that can be source or destination deponds upon the instruction size.
+for single operand or immediate operand instructions  the reg field may contain opcode extension rather than register bits and R/M will
+specify the operand in that case.
+
+reg-code         8 bit              16 bit                32 bit
+-----------------------------------------------------------------
+000               AL                 AX                   EAX
+001               CL                 CX                   ECX
+010               DL                 DX                   EDX
+011               BL                 BX                   EBX
+100               AH                 SP                   ESP
+101               CH                 BP                   EBP
+110               DH                 SI                   ESI
+111               BH                 DI                   EDI
+
+
+mod   r/m      addressing mode
+----------------------------
+
+00    000      [ eax ]
+01    000      [ eax + disp 8 ]
+10    000      [ eax + disp 32]
+11    000      eax - ax - al
+
+00    001      [ ecx ]
+01    001      [ ecx + disp 8 ]
+10    001      [ ecx + disp 32]
+11    001      ecx - cx - cl
+
+00    010      [ edx ]
+01    010      [ edx + disp 8 ]
+10    010      [ edx + disp 32]
+11    010      edx - dx - dl
+
+00    011      [ ebx ]
+01    011      [ ebx + disp 8 ]
+10    011      [ ebx + disp 32]
+11    011      ebx - bx - bl
+
+00    100      SIB mode                           |
+01    100      SIB + disp 8                       |  SIB MODE
+10    100      SIB + disp 32                      |
+11    100      esp - sp - ah
+
+00    101      32 bit displacement only mode      |   [ DISPLACEMENT ONLY ]    
+01    101      [ ebp + disp 8 ]
+10    101      [ ebp + disp 32 ]
+11    101      ebp - bp - ch
+
+00    110      [ esi ] 
+01    110      [ esi + disp 8  ]
+10    110      [ esi + disp 32 ]
+11    110      esi - si - dh
+
+00    111      [ edi ]
+01    111      [ edi + disp 8  ]
+10    111      [ edi + disp 32 ]
+11    111      edi - di - bh
+
+__________________________________________________________________________
+
+SIB
+---
+it is called as scale index byte.
+
+reg/m bit field must be '100' for SIB addressing mode
+
+and mode bit field must not be '11'
+
+sclae - 2 bit  4 combinations
+index - 3 bit  4 combinations
+ base - 3 bit  4 combinations
+
+SIB = (index * 2^scale) + base
+
+
+scale  |  index * scale value
+-------|---------------------
+00     |   index * 1
+01     |   index * 2
+10     |   index * 4
+11     |   index * 8
+
+
+index  |  register
+-------|------------
+ 000   | eax
+ 001   | ecx
+ 010   | edx
+ 011   | ebx
+ 100   | illegal   ;intel reserved this for future uses
+ 101   | ebp
+ 110   | esi
+ 111   | edi
+
+
+base   |  register
+-------|------------
+ 000   | eax
+ 001   | ecx
+ 010   | edx
+ 011   | ebx
+ 100   | esp
+ 101   | displacement only if mod=00 , EBP if MOD = 01 or 10
+ 110   | esi
+ 111   | edi
+
+Note that this addressing mode does not allow the use of the ESP register as an index register. 
+
+[ reg32 + eax*n ] MOD = 00   without displacement
+[ reg32 + ebx*n ]
+[ reg32 + ecx*n ]
+[ reg32 + edx*n ]
+[ reg32 + ebp*n ]
+[ reg32 + esi*n ]
+[ reg32 + edi*n ]
+
+[ disp + reg8 + eax*n ] MOD = 01    with 8 bit displacement
+[ disp + reg8 + ebx*n ]
+[ disp + reg8 + ecx*n ]
+[ disp + reg8 + edx*n ]
+[ disp + reg8 + ebp*n ]
+[ disp + reg8 + esi*n ]
+[ disp + reg8 + edi*n ]
+
+[ disp + reg32 + eax*n ] MOD = 10    with 16 or 32 bit displacement  
+[ disp + reg32 + ebx*n ]
+[ disp + reg32 + ecx*n ]
+[ disp + reg32 + edx*n ]
+[ disp + reg32 + ebp*n ]
+[ disp + reg32 + esi*n ]
+[ disp + reg32 + edi*n ]
+
+[ disp + eax*n ] MOD = 00, and        with no base
+[ disp + ebx*n ] BASE field = 101
+[ disp + ecx*n ]
+[ disp + edx*n ]
+[ disp + ebp*n ]
+[ disp + esi*n ]
+[ disp + edi*n ]
+_____________________________________________________________________________
+
+displacement
+------------
+
+diplacement always comes inside squre brackets in intel syntax , because it is used to access memory
+
+it can be part of SIB byte or with a register like [ eax + disp ]
+displacement is used in addressing memory ( RAM ).
+
+all variables are replaced with corresponding displacement and we access them using dereferencing the address
+
+how displacement bytes are encoded
+----------------------------------
+
+add [1] , 2       --> [1] will be encoded as 00000000 00000000 00000000 00000001
+
+add [al] , 2     --> will show error!
+
+add [ah] , 2     --> will show error!
+
+add [eax] , 2     --> will work fine.
+
+displacements must be given in 32 bits for 32 bit processor
+______________________________________________________________________________
+
+immediate
+---------
+immediate won't come inside squre brackets
+
+when a instruction takes an operand as immediate , immediate byte contains the value. 
+
+If an instruction specifies an immediate operand, the operand always follows any displacement bytes.
+
+if an opcode has 1 as Most significant bit , then the instruction has immediate as one of it's operand.
+
+immediate cannnot be destination for an instruction. 
+
+so  mod and reg/m  determines the destination.
+
+reg - used as opcode extension which must '000' for immediate operand instruction.
+      opcode extension may change one instruction to another
+
++-------------------------------+ +-------+ +-----------+ +-----------+  +--------------+  +------------+
+| 1 | 0 | 0 | 0 | 0 | 0 | x | s | | 0 | 0 | | 0 | 0 | 0 | | 1 | 0 | 1 |  | displacement |  | immediate  |
++-------------------------------+ +-------+ +-----------+ +-----------+  +--------------+  +------------+
+
+s = 0 , 8 bit operands
+s = 1 , 32 or 16 bit operands.
+
+x = 0 , immediate is same in size specified by s bit field.
+x = 1 , immediate is one byte operand and it is going to sign extended to the destination operand.
+
+how immediate bytes are encoded
+--------------------------------
+
+ mov eax , dword 0x1   --> dword 0x1 here must be encoded as 00000000 00000000 00000000 00000001
+ 
+ mov eax , word 0x1    --> 0x66 prefix is used to indicate that we use 16 bit operands.
+
+                           word 0x1 will be encoded as 00000000 00000001
+
+ mov eax , byte 0x1    --> byte 01  will be encoded as 00000000 00000000 00000000 000000001 
+
+ there are some instruction that will convert the given 8 bit operand to 32 bit operand before doing the actual operation.
+ in those case 8 bit operands are encoded in 8 bits , later the instruction will sign extend it and do the operation.
+_________________________________________________________________________________________________________________________
+
+tricks and summary
+-----------------
+
+add eax , ebx                              mod = 11
+
+add eax , [ebx]                            mod = 00       
+
+add eax , [ebx + disp 8]                   mod = 01
+
+add eax , [ebx + disp 32]                  mod = 10
+
+add eax , displacement                     mod = 00 , reg/m = 101      32 bit displacement only
+ 
+add eax , [n*ebx + reg 32]                 mod = 00 , reg/m = 100      SIB with no displacement
+
+add eax , [n*ebx + reg 8 + disp ]          mod = 01 , reg/m = 100      SIB with displacement
+
+add eax , [n*ebx + reg 32 + disp ]         mod = 10 , reg/m = 100      SIB with displacement
+
+add eax , [n*ebx + disp ]                  mod = 00 , base =  101      SIB with diplacement only
+
+difference between displacement and immediate
+---------------------------------------------
+
+immediate is an operand , not used in any memory related operands.
+
+displacement is displacement in memory. so when we want to dereference a memory location we use displacement.
+
+add eax , [10]    --> here 10 is displacement in memory
+
+add eax , 10      --> here 10 is immediate , it has nothing to do with memory it is just operand value.
+__________________________________________________________________________________________
+
+add eax , [10]   - 10 is displacement 
+--------------------------------------
+                                  
+000000 1 1 - 00 000 101   -   0000 1010 0000 0000 0000 0000 0000 0000
+----------   ----------       ---------------------------------------
+ opcode      mod-reg-reg\m              displacement
+
+0000000 - opcode for add instruction
+
+1 - specifies the destination is a register for this instruction.
+1 - specifies it's operands are 32 bit
+
+mod = 00  and  reg/m = 101 - it tells us it is a displacement only operand.
+
+reg = 000 - it is tells us that EAX is a destination register
+
+0000 1010 0000 0000 0000 0000 0000 0000 - displacement bytes ( 32 bit becasue s = 1)
+____________________________________________________________________________________________
+
+add [eax] , byte 10 - 10 is immediate
+--------------------------------------
+
+
+100000  0 0     00  000 000     0000 0010
+-----------    -------------    ---------
+opcode         mod-reg-reg/m    immediate
+
+
+1 in MSB of opcode indicates that it has immediate operand.
+
+x - 0  tells that immediate is size same as specified in s bit field.
+s - 0  indicates that it has 8 bit operands
+
+mod = 00 and reg/m =00 indicates the destination register and addressing mode [ eax ]
+
+reg = 000 opcode extension
+
+0000 0010 - is a 8 bit immediate 
+
+____________________________________________________________________________________________________________________________________________________________
+
+examples of encoding x86 instructions
+-------------------------------------
+
+add    0 0 0 0 0 0 d s
+
+       d = 0   source = reg      destination = reg/m
+       d = 1   source = reg/m    destination = reg
+       s = 0   8 bit operands
+       s = 1   16 bit or 32 bit operands
+
+
+add  CL , AL
+-------------
+
+* adding 8 bit register  so s = 0
+* destination is register so d = 1
+
+the 'd' bit causes two different opcodes that does the same job
+
+000000 1 0     11 001 000    02 C8
+ opcode         operands
+
+000000 0 0     11 000 001    00 C1
+ opcode         operands
+
+_____________________________________________________________
+
+add ecx , eax
+--------------
+
+* adding 32 bit register so s = 1
+* destination is a register so d = 1
+
+
+000000 1 1      11 001 000    03 C8
+opcode           operands
+
+000000 0 1      11 000 001    01 C1
+opcode           operands
+
+_____________________________________________________________
+
+add edx , disp32
+----------------
+
+* adding 32 bit operands so s = 1
+* destination is a register so d = 1
+
+
+000000 1 1   00 011 101  disp32     03  1D
+opcode        operands
+
+_______________________________________________________________
+
+add edi , [ ebx ]
+-----------------
+
+* adding 32 bit operands so s = 1
+* destination is a register so d = 1
+
+000000 1 1   00 111 011   03 3B
+opcode       operands
+
+________________________________________________________________
+
+add eax , [ esi + disp 8]
+-------------------------
+
+* adding 32 bit operands so s = 1
+* destination is a reigister so d = 1
+
+000000 1 1  01 000 110   disp8   03 46
+opcode      operands
+_________________________________________________________________
+
+add ebx , [ ebp + disp 32]
+---------------------------
+
+* adding 32 bit operands so s=1
+* destination is a register so d = 1
+
+000000 1 1   10 011 101  disp 32   03 9D
+
+__________________________________________________________________
+
+add ebp , [ disp32 + eax * 1 ]
+-------------------------------
+
+* adding 32 bit operands so s=1
+* destinations is a register so d=1
+
+000000 1 1  00 101 100   00 000 101    03 2C 03
+ opcode       operand      sib
+
+___________________________________________________________________
+
+add ecx , [ ebx + edi * 4 ]
+---------------------------
+
+* adding 32 it operands so s=1
+* destination is a regular so d=1
+
+000000 1 1   00 001 100   10 111 011    03 0C BB
+____________________________________________________________________
+
+

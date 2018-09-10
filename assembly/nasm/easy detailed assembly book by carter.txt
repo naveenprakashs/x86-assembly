@@ -1,0 +1,67 @@
+chapte 1 notes
+--------------
+
+numbers System - binary - decimal - hexadeciaml
+
+hexadecimal is shorthand for binary
+
+4 bits are called nibble.
+
+1 byte has two nibbles.
+
+we can represent each nibble in hexadecimal.
+
+so two hexadecimal characters for a byte.
+
+KB -> 2^10  1024 bytes
+MB -> 2^20  10 48 576 bytes
+GB -> 2^30  1 07 37 41 824 bytes
+
+units of memory -CPU
+
+byte       
+word           - 2 byte
+double word    - 4 byte
+quad word      - 8 byte
+paragraph      - 16 byte
+
+. The CPU can access data in registers much faster than data in memory. 
+. However, the number of registers in a CPU is limited.
+. so the programmer must take care to keep only currently used data in registers.
+
+computers uses a clock to synchronize the execution of the instruction.
+
+1 GHZ - 1 BILLION cycles per second
+
+pentium introuduces MMX instructions makes common graphics faster.
+
+
+ESI  EDI  ESP  EBP  --> cannot be used as 8 bit
+
+. One of definitions of the term word refers to the size of the data registers of the CPU. 
+
+. In protected mode, a selector value is an index into a descriptor table. 
+
+. An assembler is a program that reads a text file with assembly instructions and converts the assembly into machine code. Compilers are programs
+  that do similar conversions for high-level programming languages.
+
+. One restriction is that both operands of a instruction may not be memory operands. 
+
+. The operands must also be the same size.
+
+. A directive is an artifact of the assembler not the CPU. 
+
+. They are not translated into machine code. 
+
+EQU directive is used to create a symbol
+
+byte        B
+word        W
+double word D
+quad word   Q
+ten bytes   T
+
+Macros are more flexible than symbols in two ways. Macros can be redefined and can be more than simple constant numbers.
+
+Data directives are used in data segments to define room for memory.
+____________________________________________________________________________________________________________________________________________________

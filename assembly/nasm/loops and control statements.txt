@@ -1,0 +1,579 @@
+font-name: consolas |
+--------------------|
+
+control statements and loops in x86 assembly
+````````````````````````````````````````````
+condtional jump:
+----------------
+
+cmp and test ---> set status of the flags --> jump instructions --> checking status of the flags --> jumping to the label accordingly.
+
+in x86 assembly if , if-else , else-if , for , while , do-while , switch-case instructions are implemented using condtional jups and 
+unconditional jumps.
+
+
+1. we have to understand what TEST and CMP do
+2. then what are the flags TEST instruction set 
+3. then when and why the instruction sets the particular flag
+4. check the flag status
+5. jump
+or instead of 4 and 5 use simple instruction that replaces the above two steps.
+
+
+
+condition is evaluated using TEST and CMP instructions.
+
+test -  arg1 & arg2 and sets the flags ( bitwise AND ) 
+        it sets SF , PF , ZF	  
+		it SETS overflow flag and carry flag to 0 ( because it just do Bitwise AND )
+		There are 9 different opcodes for the TEST instruction depending on the type and size of the operands. 
+		It can compare 8-bit, 16-bit, 32-bit or 64-bit values. 
+		It can also compare registers, immediate values and register indirect values. 
+		  
+cmp  -  (arg1-arg2) and sets the flags  ( MINUS operation and won't save the result)
+        it sets SF , OF , AF , PF , ZF , CF
+	    result = arg1-arg2
+	    if MostSignificant bit of result is 1 , then Sign flag is set
+	    if arg1==arg2 ZF is set 
+		   
+        arg1-arg2 and make changes corresponding to the result of arg1-arg2
+		then various jump instructions checks the status of the flags and do jumps.
+		
+          
+EFLAG REISTER - 32 bit register , each bit  has it's own meaning.
+
+give importance to carry and overflow flags
+carry is used for unsigned arithmetic.
+overflow is used for signed arithmetic.
+
+
+zero flag          ZF  --> if the result is zero
+sign flag          SF  --> if the result is negative number
+overflow flag      OF  --> overflow flag sets to 1 when doing signed arithmetic.
+parity flag        PF  --> when number of on bit is on , if number of on bits are even
+carry flag         CF  --> carry flag is set when  doing unsigned arithmetic. when the result is larger than the register can hold
+auxillary flag     AF  --> 
+trap flag          TF
+interrupt flag     IF
+direction flag     DF
+
+
+<  less than
+>  greater than
+<= less than or equal to     
+>= greater than or equal to     
+== equal to 
+!= not equal to 
+
+to check the status of the a flag
++--------+------------------------------+-------------+--------------------+
+|Instr   | Description                  | signed-ness | Flags              |
++--------+------------------------------+-------------+--------------------+
+| JO     | Jump if overflow             |             | OF = 1             |
++--------+------------------------------+-------------+--------------------+
+| JNO    | Jump if not overflow         |             | OF = 0             |
++--------+------------------------------+-------------+--------------------+
+| JS     | Jump if sign                 |             | SF = 1             |
++--------+------------------------------+-------------+--------------------+
+| JNS    | Jump if not sign             |             | SF = 0             |
++--------+------------------------------+-------------+--------------------+
+| JE/    | Jump if equal                |             | ZF = 1             |
+| JZ     | Jump if zero                 |             |                    |
++--------+------------------------------+-------------+--------------------+
+| JNE/   | Jump if not equal            |             | ZF = 0             |
+| JNZ    | Jump if not zero             |             |                    |
++--------+------------------------------+-------------+--------------------+
+| JP/    | Jump if parity               |             | PF = 1             |
+| JPE    | Jump if parity even          |             |                    |
++--------+------------------------------+-------------+--------------------+
+| JNP/   | Jump if no parity            |             | PF = 0             |
+| JPO    | Jump if parity odd           |             |                    |
++--------+------------------------------+-------------+--------------------+
+| JCXZ/  | Jump if CX is zero           |             | CX = 0             |
+| JECXZ  | Jump if ECX is zero          |             | ECX = 0            |
++--------+------------------------------+-------------+--------------------+
+
+attention please !!! 
+--------------------
+
+carry flag will be set when be borrow for MSB and it happens when subract bigger number from smaller number.
+
+if the carry flag is set , it means you subracted a big number from small number. so the first operand is smaller than the second operand.
+using this logic , we can check whether the first operand is bigger than second or not.
+
+so if the carry flag is set during subraction , it means the first operand is smaller than second operand.
+
+to check src1 > src2 , we need to check if CF=0 and ZF=0 after cmp instruction
+to check src1 < src2 , we need to only check if CF=1 after cmp instruction
+
+to check src1 >= src2 , we need to only check if CF=0 after cmp instruction , if CF=1 then src1<src2
+to check src1 <= src2 , we need to check check if CF=1.if CF=1 no problem.but if CF=0 we need to check ZF=1
+
+
+Then the unsigned ones:
++--------+------------------------------+-------------+--------------------+
+|Instr   | Description                  | signed-ness | Flags              |
++--------+------------------------------+-------------+--------------------+
+| JB/    | Jump if below                | unsigned    | CF = 1             |   a < b
+| JNAE/  | Jump if not above or equal   |             |                    |
+| JC     | Jump if carry                |             |                    |
++--------+------------------------------+-------------+--------------------+
+| JNB/   | Jump if not below            | unsigned    | CF = 0 or ZF=1     | 
+| JAE/   | Jump if above or equal       |             |                    |  a > = b
+| JNC    | Jump if not carry            |             |                    |
++--------+------------------------------+-------------+--------------------+
+| JBE/   | Jump if below or equal       | unsigned    | CF = 1 or ZF = 1   |
+| JNA    | Jump if not above            |             |                    |  a < = b
++--------+------------------------------+-------------+--------------------+
+| JA/    | Jump if above                | unsigned    | CF = 0 and ZF = 0  |   a > b
+| JNBE   | Jump if not below or equal   |             |                    |
++--------+------------------------------+-------------+--------------------+
+
+
+attention please !!!
+--------------------
+OF - Over flow flag will be always 0. because we are doing subraction here.but overflow flag will affect only on addition.
+
+we can find big or small number between given two numbers by subracting them. if the result of subraction contains the most
+significant bit 1 then the first number is smaller.if it is 0 then the first number is bigger.
+
+
+-2 - (-1) = -2+1 = -1
+
+ 2 - 3 = -1
+
+-1 - (2) = -3
+
+ 4 - 3 = 1
+
+ as you can see above , if the first operand is smaller than the second operand the result will be negative. by checking sign flag
+ after subracting we can find which bigger number.
+ 
+
+And, finally, the signed ones:    <> means !=
++--------+------------------------------+-------------+--------------------+
+|Instr   | Description                  | signed-ness | Flags              |
++--------+------------------------------+-------------+--------------------+
+| JL/    | Jump if less                 | signed      | SF <> OF           | OF = 0 , SF = 1 ; 
+| JNGE   | Jump if not greater or equal |             |                    |
++--------+------------------------------+-------------+--------------------+
+| JGE/   | Jump if greater or equal     | signed      | SF = OF            | OF = 0 , SF = 0
+| JNL    | Jump if not less             |             |                    |
++--------+------------------------------+-------------+--------------------+
+| JLE/   | Jump if less or equal        | signed      | ZF = 1 or SF <> OF | OF = 0 , SF = 1
+| JNG    | Jump if not greater          |             |                    |
++--------+------------------------------+-------------+--------------------+
+| JG/    | Jump if greater              | signed      | ZF = 0 and SF = OF | OF = 0 , SF = 0
+| JNLE   | Jump if not less or equal    |             |                    |
++--------+------------------------------+-------------+--------------------+
+
+when carry flag occures
+------------------------
+
+when we subracting big number from small number , we borrow into the most significant bit. if we borrow for MSB then CF=1
+
+when we add two numbers and it is larger then the register where the result is going to be stored , it causes the carry out of the MSB.
+if carry occures out of MSB then CF=1
+
+
+when overflow flag occures
+---------------------------
+
+it occures when the result goes out of the positive region and it crosses the negative region.
+If the sum of two numbers with the sign bits off yields a result number  with the sign bit on, the "overflow" flag is turned on.
+
+it occures when the result goes ouf of the negative region also and needs more bits to store it.
+If the sum of two numbers with the sign bits on yields a result number with the sign bit off, the "overflow" flag is turned on.
+
+
+EQUAL AND NOT EQUAL ARE same for signed and unsigned numbers
+-------------------------------------------------------------
+
+a=5 b=5  if(a==5)    a-b=0    ZF is 1  if the result is zero then the two numbers are equal
+a=6 b=5  if(a!=b)    a-b=1    ZF is 0  if the result is not zero then the two numbers are not equal
+
+
+
+FOR UNSIGNED NUMBERS  - we need to care about CARRY FLAG as it is unsigned arithmetics
+---------------------
+
+JA and JNBE  greater than   a > b       a- destination    b- source
+-----------  ------------
+
+we have to check two flags ZERO FLAG = 0 and CARRY FLAG = 0
+
+JA - Jump IF Above     
+JNBE - Jump if not below or equal
+
+JA and JNBE are autually same.
+
+JA and JNBE checks for ZF=0 and CF=0 , then do the jump
+else it won't jump
+
+cmp  des , src  --> sub des , src -->  des-src
+
+cmp  2 , 1           ( 2 - 1 )    -->  ZF=0   CF=0  
+
+result is 1 
+
+so it jumps.
+
+cmp 1 , 2        ( 1-2)  --> ZF=0   CF =1
+
+so it won't jump
+
+
+JB and JNAE and JC  less than   a < b    a - destination      b - source
+------------------  ---------
+
+we have to check only one flag CARRY FLAG=1
+
+JB - Jump if Below
+JNAE -Jump if not above or equal
+JC - Jump if Carry
+
+it checks for JC = 1
+
+cmp des , src
+
+cmp 2 , 1  (2-1) -> CF=0 so it won't jump
+cmp 1 , 1  (1-2) -> CF=1 so it will jump
+
+
+
+ JAE      above or equal    a >= b    greater than or equal
+-----------------------------------------------------------
+
+ we have to check only one flag CARRY FLAG=0
+
+
+ Jump if above or equal 
+
+ if  carry flag is zero it means , the number is greater than the other.
+
+ here we have to check two conditions . IS the given number  greater than another and given number is equal to another.
+
+ but we don't need to check two conditions , if CF is zero it tells the given number is greater. one condition is checked.
+
+ we can check the zero flag or the carry flag. if the zero flag is not set we have to  check the carry flag also.
+
+ but if we check carry flag we need not to check the zero flag.it is an advantage.
+
+
+ cmp 2 , 1  (2-1) -> CF=0 ZF=0 SF=0  it will jump
+ cmp 1 , 2  (1-2) -> CF=1 ZF=0 SF=1  it won't jump
+ cmp 2 , 2  (2-2) -> CF=0 ZF=1 SF=0  it will jump
+
+
+
+JBE  jump if below or equal   a<=b  less than or equal to 
+-------------------------------------------------------
+
+we have to check CARRY FLAG=1 , ZERO FLAG = 1
+
+cmp 2 , 1 (2-1) -> CF=0 ZF=0 it won't jump
+cmp 1 , 2 (1-2) -> CF=1 ZF=0 it will jump
+cmp 2 , 2 (2-2) -> CF=0 ZF=1 it will jump
+
+_________________________________________________________________________________________________________________________________________________________
+
+
+FOR SIGNED NUMBERS - we need to care about OVERFLOW FLAG
+------------------
+
+
+< less than  JL - JUMP IF LESS
+-------------------------------
+
+we have to check SIGN FLAG and OVER FLOW flag . both have to be not same.
+
+cmp 2 , 1   2-1=1   SF=0  CF=0  won't jump 
+cmp 2 , 2   2-2=0   SF=0  CF=0  won't jump
+cmp 1 , 2   1-2=0   SF=1  CF=0  will jump
+
+
+> greater than  JG - JUMP IF GREATER
+-------------------------------------
+
+we have to check ZERO FLAG , SIGN FLAG and OVERFLOW FLAG 
+
+condition: ZF = 0 and SF = OF
+
+cmp 2 , 1      2-1   SF=0 OF=0 ZF=0 will jump
+cmp 2 , 2      2-2   SF=0 OF=0 ZF=1 won't jump
+cmp 1 , 2      1-2   SF=1 OF=0 ZF=0 won't jump
+
+
+
+<=  less than or equal to JLE - JUMP IF LESS OR EQUAL
+-----------------------------------------------------
+
+we have to check ZERO FLAG , SIGN FLAG and OVERFLOW FLAG
+
+condition: ZF = 1 or SF <> OF  (  fuck!!!  i did't see the 'or' and wasted an hour checking that both conditions must be true)
+
+cmp 2 , 1      2-1   SF=0 OF=0 ZF=0 won't jump
+cmp 2 , 2      2-2   SF=0 OF=0 ZF=1 will jump
+cmp 1 , 2      1-2   SF=1 OF=0 ZF=0 will jump
+
+
+
+>=  greater than or equal to JGE - JUMP IF GREATER OR EQUAL
+----------------------------------------------------------
+
+we have to check SIGN FLAG and OVERFLOW FLAG
+
+SF = OF
+
+cmp 2 , 1      2-1   SF=0 OF=0  will jump
+cmp 2 , 2      2-2   SF=0 OF=0  will jump
+cmp 1 , 2      1-2   SF=1 OF=0  won't jump
+
+_____________________________________________________________________________________________________________________________________________
+
+loop instructions
+------------------
+
+
+mov ecx , 10
+myLoop:
+        do something ();
+        loop myLoop;        it decrements the value of ecx register by one , iterations stops only when ecx is 0
+
+
+
+loop             Decrement count; jump short if count ≠ 0. it won't check ZF
+loope/loopz      Decrement count; jump short if count ≠ 0 and ZF = 1.
+loopne/loopnz    Decrement count; jump short if count ≠ 0 and ZF = 0
+
+_____________________________________________________________________________________________________________________________________________
+
+jump instruction
+----------------
+
+jump instruction is used to jump from one memory location to another memory location during the execution of the program.
+
+actually jump instruction changes the value of the IP(insrtuction pointer). instruction pointer is used to points to the next instruction
+to be executed.
+
+by changing the value of IP by the location where we want to begin program execution.
+
+
+0000    statement1    ip=0001
+0001    statement2    ip=0002
+0002    statement3    ip=0003
+0003    statement4    ip=0004
+0004    statement5    ip=0005
+0005    statement6    ip=0006
+0006    jump 0001     ip=0001     ; here the jump statement alters the vlaue of instruction pointer
+
+
+types
+-----
+1.unconditional jump 
+2.  conditional jump
+
+
+conditional jump
+----------------
+
+conditional jump means jumping to a memory location based on the conditions.
+
+there are lot of conditional jump instructions and they check various flags like
+
+SF - sign flag
+OF - overflow flag
+ZF - zerof flag
+PF - parity flag
+CF - carry flag
+
+and jump based on the conditions.
+
+
+
+unconditional jump
+------------------
+
+conditional jump means jumping to a memory location without checking for any condition. 
+
+types
+-----
+1.intrasegment jump
+2.intersegment jump
+
+
+
+intrasegment jump - only affects instruction pointer
+-----------------
+intrasegment jumps allows us to jump anywhere in the current code segment.
+
+types
+-----
+1.short jump - always 2 bytes in size
+2.near  jump - can be 4 or 6 bytes
+
+
+short jump
+----------
+ This jump is very limited in range. It can only move up or down 128 bytes in memory.
+ It uses a single signed byte to store the displacement of the jump.
+ it is default jump in NASM assembler 
+
+In a short jump, the machine code includes a 1 byte value that is used as a
+displacement and added to the IP. For a backward jump, this is a negative value. For
+a forward jump, this is a positive value. This makes the short jump efficient and
+doesn’t need much space.
+
+
+near jump
+---------
+ This jump is the default type for both unconditional and conditional branches.
+ it can be used to jump to any location in a segment.
+
+
+
+intersegment jump - affects instruction pointer and code segment
+-----------------
+intersegment jump allows us to jump inside as well as outside the current code segment. 
+
+far jump
+---------
+far jump is intersegment jump.
+we can jump from one segment to another segment 
+
+jmp--.
+     |--------- conditional jump
+     |
+     |--------- unconditional jump
+                              |---------- intersegment jump
+                              |                           |-------- far jump - to another segment  ( affects IP + CS)
+                              |                              
+                              |---------- intrasegment jump
+                                                          |-------- near jump - above 128 bytes or below 128 bytes ( affects IP only)
+                                                          |
+                                                          |-------- short jump - anywhere within segment ( affects IP only)
+
+
+
+
+__________________________________________________________________________________________________________________________________________________________
+
+carry flag and overflow flag are given to detect errors in unsigned and signed arithmetic respectively.
+
+unsigned ---.---   getting negative number as result - occures when we subract bigger number from smaller number - subraction   
+            |      examble  3-4=-1
+            |
+            |---   getting bigger number as result  - occures when we add two numbers that produces bigger number than the capacity - addition 
+                   consider 8 bit addition. 
+                   1111 1111 - 255
+                   0000 0001 - 1
+                 ------------------
+                   0000 0000 - 0 
+                 ------------------
+
+
+signed ---.--- adding two positive numbers and getting negative as result - occures when we add two positive numbers and the result goes into negative range - addition
+               0111 1111 - 127
+               0000 0001 - 1
+             -------------------
+               1000 0000 - -128 
+             ------------------ 
+            
+               adding two negative numbers and getting positive number as result
+               1000 0000 - -128
+               1111 1111 - -1
+              -----------
+             1 0111 1111 - 127
+              -----------
+
+
+             subracting positive number from a negative number and getting result as positive
+             1000 0000 - -128
+             0000 0001 -  1
+           -----------------
+             0111 1111 - 127
+           -----------------
+
+
+
+we use carry and over flow to make comparision.
+for comparision we use only sub operation and that sets the EFLAG register.
+
+so carry flag is on only because subracting bigger number from a smaller number.
+
+likewise overflow flag is on only when we subract positive number from negative number.
+
+
+comparision
+-----------
+to compare two numbers we subract the two numbers and checks the flag.
+
+unsigned
+--------
+
+greater than a > b 
+------------------
+if a > b , then the result will be positive. so SF = 0.
+           CF must be 0 , because carry will occur only when we subract bigger number from smaller number.
+           so if a is bigger than b , then CF must be zero.
+           so to find biggest number from given two unsigned numbers we have to check CF=0 and ZF=0
+           we check ZF flag because there is a chance to both numbers to be same.
+
+
+less than a < b
+----------------
+if a < b , then result will be negative.so CF=1 
+           CF will be set when we subract bigger number from smaller number.
+
+
+signed
+------
+
+OF flag occures when we subract two numbers and the difference between the numbers go out of range.it happens only when a is negative
+number and b is positive number.if overflow flag occures in subraction the result will be positive.
+
+ 127 - (-1) = -128  OF = 1 , SF = 1
+
+  -1 - (-2) =    1  OF = 0 , SF = 0 
+
+-128 - (+1) =  127  OF = 1 , SF = 0
+
+
+
+
+so if a>b then OF==SF
+ 
+      1000 0000 - 0000 0001 = 0111 1111
+     -128       -         1 = -129        OF = 1 , SF = 0
+
+
+
+      0111 1111 - 1111 1111 = 1
+      127       -        -1
+
+   if a<b then OF!=SF
+
+
+greater than a > b
+------------------
+if a > b , then the result will be positive. so SF = 0 
+           OF==SF , because if there is OF then there is arithmetic mistake
+           if there is OF then the result will be positive. 
+           so there have to be no overflow and at the same time we don't have to get negative number as result.
+           ZF = 0 and OF==SF
+
+less than a < b
+----------------
+if a < b , then the result will be negative. so SF =1
+           OF!=SF , becasue if there is over flow , which means we subracted bigger value from negative number  and the result is more negative
+           and it can't represented using 8 bits. so b must be bigger than a. SF = if overflow occures in subraction which means the result must
+           be positive. so if OF!=SF then a < b.
+
+
+
+           
+
+
+
+
+

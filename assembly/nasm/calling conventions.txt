@@ -1,0 +1,79 @@
+#include<stdio.h>
+
+int __attribute__((__cdecl__)) cdecl_add(int a,int b,int c)
+{
+    return a+b+c;
+}
+
+int __attribute__((__stdcall__)) std_add(int a,int b,int c)
+{
+    return a+b+c;
+}
+
+int main()
+{
+ volatile int a=1,b=2,c=3;
+
+ cdecl_add(a,b,c);
+ std_add(a,b,c);
+}
+__________________________________________________________________________________________________________________________________________________________
+
+cdecl_add:
+  push ebp
+  mov ebp, esp
+  mov edx, DWORD PTR [ebp+8]
+  mov eax, DWORD PTR [ebp+12]
+  add edx, eax
+  mov eax, DWORD PTR [ebp+16]
+  add eax, edx
+  pop ebp
+  ret
+
+std_add:
+  push ebp
+  mov ebp, esp
+  mov edx, DWORD PTR [ebp+8]
+  mov eax, DWORD PTR [ebp+12]
+  add edx, eax
+  mov eax, DWORD PTR [ebp+16]
+  add eax, edx
+  pop ebp
+  ret 12							; callee removes the stack parameters in __stdcall__ calling convention
+
+main:
+  push ebp
+  mov ebp, esp
+  sub esp, 16
+  mov DWORD PTR [ebp-4], 1
+  mov DWORD PTR [ebp-8], 2
+  mov DWORD PTR [ebp-12], 3
+
+  mov ecx, DWORD PTR [ebp-12]
+  mov edx, DWORD PTR [ebp-8]
+  mov eax, DWORD PTR [ebp-4]
+  push ecx
+  push edx
+  push eax
+  call cdecl_add
+  add esp, 12							; caller removes the stack parameters in __cdecl__ calling convention
+
+  mov ecx, DWORD PTR [ebp-12]
+  mov edx, DWORD PTR [ebp-8]
+  mov eax, DWORD PTR [ebp-4]
+  push ecx
+  push edx
+  push eax
+  call std_add
+  mov eax, 0
+  leave
+  ret
+  __________________________________________________________________________________________________________________________________________________________
+
+  cdecl calling convention
+  ------------------------
+  arguments are passed on right to left
+  caller removes the stack parameters
+  EAX, ECX, and EDX are caller-saved
+  EBP, ESI , EDI , EBX are callee saved.
+

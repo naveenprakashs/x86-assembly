@@ -1,0 +1,175 @@
+we use sign magnitude , one's complement , two's complement and biased notation for representing negative numbers in binary computation.
+
+even though we have four methods for representing negative numbers , we mostly use two's complement. most of the modern 
+CPU uses two's complement for computation.
+
+we also use biased notation for IEEE floating point exponents and sign magnitude for IEEE floating point significant.
+
+basic arithmetic on sign magnitude notation and two's  complement are different. understanding the difference will give us
+good initution on floating point arithmetic.
+
+
+SIGN MAGNITUDE
+--------------
+
+when we use sign magnitude we have to follow some special algorithm to get the exact result.
+simply doing arithmetic will yield wrong result.
+
+
+algorithm for arithmetic on signed magnitude
+--------------------------------------------
+
+operation          add-magnitude              a>b           a<b              a=b
+----------------------------------------------------------------------------------
+(+a)+(+b)           + (a + b)
+----------------------------------------------------------------------------------
+(+a)+(-b)                                   +(a-b)        -(b-a)            +(a-b)
+----------------------------------------------------------------------------------
+(-a)+(+b)                                   -(a-b)        +(b-a)            +(a-b)
+----------------------------------------------------------------------------------
+(-a)+(-b)           - (a + b)
+----------------------------------------------------------------------------------
+(+a)-(+b)                                   +(a-b)        -(b-a)            +(a-b)
+----------------------------------------------------------------------------------
+(+a)-(-b)           + (a + b)
+----------------------------------------------------------------------------------
+(-a)-(+b)           - (a + b)
+----------------------------------------------------------------------------------
+(-a)-(-b)                                   -(a-b)        +(b-a)            +(a-b)
+----------------------------------------------------------------------------------
+
+
+
+ONE'S COMPLEMENT
+----------------
+* if we use one's complement arithmetic , if carry occures out of MSB we have to add it to get the exact result.
+* if borrow occures out of MSB we have to subract one from the result we get.
+
+
+TWO'S COMPLEMENT
+----------------
+
+* in two's complement method we just do arithmetic on numbers
+* we don't care about sign of the numbers.
+
+* for examble if we want 3-2 
+  1. we can take (+3) - (+2)
+  2. or can do like (+3) + (-2)
+
+
+(+3)-(+2)
+
+  0011 - 3
+  0010 - 2
+  ----
+  0001 - 1 
+  ----
+
+(+3)+(-2)
+
+  0011 - (+3)
+  1110 - (-2)
+  ----
+ 10001 - 1
+  ----
+
+* in sign and magnitude method we have to do some calculations based on 
+  sign of the numbers.
+
+* for example if we want to do 3-2  
+  1. we can take (+3) - (+2)
+  2. or can do like (+3) + (-2)
+
+(+3) - (+2)
+ 
+  0011 - (+3)
+  0010 - (+2)
+  -----------
+  0010 - (+1)
+  -----------
+
+
+(+3) + (-2)
+
+  0011 - (+3)
+  1001 - (-2)
+ ------
+  1100 - (-4) - ERROR !!!
+ ------
+
+ AS YOU CAN SEE ABOVE , THE MATH PRODUCES WRONG RESULT!!!!
+
+ SO WE HAVE TO DO SOME SPECIAL CALCULATIONS FOR OBTAINING THE RESULT!!!!!
+
+ here we go............
+
+ (+a)+(-b)
+
+1.If a is bigger than b  +(a-b) 
+2.If b is bigger than a  -(b-a)
+3.If a is equal to b     +(a-b)    
+
+in our case a=3 b=2 
+so a>b
+
+so , we are going to do +(a-b)
+
+(+3)-(+2)
+
+ 0011 - (+3)
+ 0010 - (+2)
+ ----
+ 0001 - (+1) 
+ ----                            
+_______________________________________________________________________________________________________________________________
+
+demo:
+
+(-3)+(-2)
+
+in two's complement
+-------------------
+
+  1101 - ( - 3 ) 
+  1110 - ( - 2 )
+ -----
+ 11011 - ( -5 ) 
+-------
+
+in sign magnitude
+------------------
+
+   1011 - (-3)
+   1010 - (-2)
+  ------
+  10101 - ( 5)  it produces in correct result
+  ------
+
+so we have to use some algorithms to get the correct result
+(-a) + (-b) = -(a+b)
+
+ so we have to add - sign to the result
+ it creates some latency
+__________________________________________________________________________________________________________________________________
+
+number      binary            sign-magnitude           one's complement       two's complemnt         biased-k notation
+ ---------------------------------------------------------------------------------------------------------------------------------
+ 0          0000                    0                        0                       0
+ 1          0001                    1                        1                       1
+ 2          0010                    2                        2                       2
+ 3          0011                    3                        3                       3
+ 4          0100                    4                        4                       4
+ 5          0101                    5                        5                       5
+ 6          0110                    6                        6                       6
+ 7          0111                    7                        7                       7
+ 8          1000                    -0                       -7                      -8
+ 9          1001                    -1                       -6                      -7
+ 10         1010                    -2                       -5                      -6
+ 11         1011                    -3                       -4                      -5
+ 12         1100                    -4                       -3                      -4
+ 13         1101                    -5                       -2                      -3
+ 14         1110                    -6                       -1                      -2
+ 15         1111                    -7                       -0                      -1
+ __________________________________________________________________________________________________________________________________
+
+

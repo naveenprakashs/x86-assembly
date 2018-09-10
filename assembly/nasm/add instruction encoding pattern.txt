@@ -1,0 +1,74 @@
+opcode changes due to EAX family ( EAX , AX , AH , AL)
+------------------------------------------------------
+
+ADD AL ,  imm8       add al , 10                     00000100 - 00001010   04 0A
+                     add al , 4                      00000100 - 00000100   04 04
+
+ADD AX ,  imm16      add ax , 0x1234                 01100110 - 00000101 - 0011010000010010 66 05 34 12
+                     add ax , 0xf000                 01100110 - 00000101 - 0000000011110000 66 05 00 f0    
+
+ADD EAX , imm32      add eax , 0x12345678            00000101 - 01111000010101100011010000010010 05 78 56 34 12
+                     add eax , 0x01234567            00000101 - 01100111010001010010001100000001 05 67 45 23 01
+                     add eax , 0x00123456            00000101 - 01010110001101000001001000000000 05 56 34 12 00
+
+___________________________________________________________________________________________________________________________________________________
+
+opcode changes due to immediate operand
+----------------------------------------
+
+ADD r/m8 , imm8      add bl , 8                      10000000 - 11 000 011 - 00001000   80 C3 08
+ADD r/m16, imm16     add bx , 0x1234                 01100110 - 10000001   - 11 000 011 - 0011010000010010 66 81 c3 34 12
+ADD r/m32, imm32     add ebx , 0x12345678            10000001 - 11 000 011 - 0111 1000 0101 0110 0011 0100 0001 0010 81 c3 78 56 34 12
+
+ADD r/m16 , imm8     add bx , 255                    01100110 - 10000011 - 11 000 011 - 11111111 66 83 c3 ff	
+ADD r/m32 , imm8     add ebx , 255                   10000011 - 11 000 011 - 11111111 83 c3 ff
+
+
+ADD r/m8 , imm8      add byte [3] , byte 7                10000000 - 00 000 101 - 00000011 00000000 00000000 00000000 - 0000 0111           80 05 03 00 00 00 07
+ADD r/m16 , imm16    add word [3] , word 0x1234           01100110 - 10000001 - 00 000 101 - 00000011 00000000 00000000 00000000 - 00110100 00010010  66 81 05 03 00 00 00 34 12   
+ADD r/m32 , imm32    add dword [3] , dword 0x12345678     10000001 - 00 000 101 - 00000011 00000000 00000000 00000000 - 01111000 01010110 00110100 00010010  81 05 03 00 00 00 78 56 34 12    
+
+ADD r/m16 , imm8     add word [3] , byte 12      66 83 05 03 00 00 00 0c
+ADD r/m32 , imm8     add dword [3] , byte 12     83 05 03 00 00 00 0c 
+
+_____________________________________________________________________________________________________________________________________________________
+
+opcode changes due to source and destination operands
+-----------------------------------------------------
+
+ADD r/m8  , r8       add ecx , edx    01 d1
+ADD r/m16 , r16      add cx , dx      66 01 d1
+ADD r/m32 , r32      add cl , al      00 c1
+
+
+ADD r/m8  , r8       add dword [5] , edx   01 15 05 00 00 00
+ADD r/m16 , r16      add word [5] , dx     66 01 15 05 00 00 00
+ADD r/m32 , r32      add byte [5] , dl     00 15 05 00 00 00
+
+
+ADD r8  ,  r/m8      add edx , dword [5]   03 15 05 00 00 00
+ADD r16 ,  r/m16     add dx , word [5]     66 03 15 05 00 00 00
+ADD r32 ,  r/m32     add dl , byte [5]     02 15 05 00 00 00
+
+_________________________________________________________________________________________________________________
+
+encoding pattern
+----------------
+
+opcode changes one instruction to another -  means add and mov instructions has different opcodes.
+
+opcode changes if the destination or source is RAX family ( RAX-EAX-AX-AH-AL) - EAX , EAX , AX , AH , AL is treated specially
+
+opcode changes if one of the operand is an immediate operand.
+
+opcode changes if the any of the operand need to be sign extended.
+
+opcode changes deponds upon the size of the operands.
+                                                                                                         (memory)                                     (memory)
+opcode changes deponds upon the source and destination operands . ( source can be immediate , register , displacement , destination can be register , displacement )
+
+opcode changes deponds upon the number of operands that instruction has. ( pop , push has 0 and 1 operands respectively , mov and add has two operands.)
+
+__________________________________________________________________________________________________________________
+
+

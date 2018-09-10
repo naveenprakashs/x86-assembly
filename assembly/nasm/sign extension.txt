@@ -1,0 +1,95 @@
+it is common to change the size of a data , to use it with other data. 
+changing data size is called sign extension.
+
+sign extension occures in two situations
+----------------------------------------
+1. increasing data size
+2. decreasing data size
+
+________________________________________________________________________________________________________________________
+
+decreasing data size
+--------------------
+for decreasing data size , we have to follow some rules deponds on whether it is signed or unsigned.
+
+
+unsigned data
+--------------
+for decreasing unsigned data size , the bits we remove must be zero.
+
+
+bits we remove are zeros - working
+------------------------
+
+0000 0000 0000 0000 0000 0000 1000 0000 --> 128 --> 32 bit data  
+                    0000 0000 1000 0000 --> 128 --> 16 bit data
+                              1000 0000 --> 128 -->  8 bit data
+
+
+some bits we remove are not zeros - not working
+----------------------------------
+
+here as you can see data is not properly decreased.
+
+0000 0000 0000 0001 0000 0000 1000 0000 --> 65664 --> 32 bit data  
+                    0000 0000 1000 0000 --> 128 --> 16 bit data
+                              1000 0000 --> 128 -->  8 bit data
+
+ ____________________________________________________________
+
+signed data
+------------
+for decreasing signed data size , the bits we remove must be all either 1's or 0's
+and the MSB after removing , must be same as removed bits.
+
+
+working 
+-------
+
+1111 1111 1010 0010 --> -94 --> 16 bit data
+          1010 0010 --> -94 -->  8 bit data
+
+0000 0000 0110 0010 --> 98 --> 16 bit data
+          0110 0010 --> 98 -->  8 bit data
+
+
+not working
+-----------
+
+1111 1111 0100 0010 --> -190 --> 16 bit data
+          0100 0010 --> 66 --> 8 bit data
+
+0000 0000 1010 0010 --> 162 --> 16 bit data
+          1010 0010 --> -94 --> 8 bit data
+
+___________________________________________________________________________________________________________________________________
+
+increasing data size
+--------------------
+for increasing data size , we have to follow some rules deponds on whether it is signed or unsigned.
+
+
+unsigned data
+-------------
+1111 1111 --> 255 --> 8 bit data
+
+0000 0000 1111 1111 --> 255 --> 16 bit data
+
+0000 0000 0000 0000 0000 0000 1111 1111 --> 255 --> 32 bit data
+
+signed data
+------------
+0111 1111 --> 127 --> 8 bit data
+
+0000 0000 0111 1111 --> 127 --> 16 bit data
+
+0000 0000 0000 0000 0000 0000 0111 1111 --> 127 --> 32 bit data
+
+
+1111 1111 --> -1 --> 8 bit data
+
+1111 1111 1111 1111 --> -1 --> 16 bit data
+
+1111 1111 1111 1111 1111 1111 1111 1111 --> -1 --> 32 bit data
+_________________________________________________________________________________________________________________________________________
+

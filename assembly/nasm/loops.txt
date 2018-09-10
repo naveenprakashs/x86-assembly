@@ -1,0 +1,391 @@
+for loop
+--------
+
+for loop in assembly language has 4 parts.
+
+* intialization 
+* checking condition
+* execution code
+* changing iterator
+
+
+intialization
+-------------
+1. we will initialize iterator variable in for loop. 
+2. this is called as intialization code.
+3. it is the first part of the for loop which gets executed.
+4. this part can be skipped
+
+
+checking condition
+------------------
+1. this the second part of the for loop which gets executed.
+2. this can be skipped
+
+
+execution code
+--------------
+1. this is the code which is in the body of the for loop
+2. this code gets executed after checking condition
+3. this part can be skipped
+4. loop iterator can be incremented or decremented inside execution code
+
+
+changing iterator 
+-----------------
+1. loop counter or iterator is changed at the end of the body of the loop.
+2. we can skip the iterator in for loop.
+
+________________________________________________________________________________________________________
+simple for loop         |
+---------------         |
+                        |
+#include<stdio.h>       |  main:
+int main()              |    push rbp
+{                       |    mov rbp, rsp
+    int a=0;            |    mov DWORD PTR [rbp-4], 0    ; int a = 0
+    int b=0;            |    mov DWORD PTR [rbp-8], 0    ; int b = 0
+                        |
+    for(a=1;a<11;a++)   |    mov DWORD PTR [rbp-4], 1    ; a = 1            | intialization code
+    {                   |    jmp .L2
+        b=b+10;         |  .L3:
+    }                   |    add DWORD PTR [rbp-8], 10   ; b = b + 10       | execution code
+                        |    add DWORD PTR [rbp-4], 1    ; a++              | changing iterator
+    return 0;           |  .L2:
+}                       |    cmp DWORD PTR [rbp-4], 10   ; a<11             | checking condition 
+                        |    jle .L3
+                        |    mov eax, 0
+                        |    pop rbp
+                        |    ret
+________________________|_____________________________________________________________________________________________________________________________________________________________________________________________
+
+nested for loop
+---------------
+                                  |  main:
+                                  |          push    rbp
+                                  |          mov     rbp, rsp
+#include<stdio.h>                 |          mov     DWORD PTR [rbp-4], 0    ; a = 0
+int main()                        |          mov     DWORD PTR [rbp-8], 0    ; b = 0
+{                                 |          mov     DWORD PTR [rbp-12], 0   ; c = 0
+    int a=0;                      |          mov     DWORD PTR [rbp-16], 0   ; d = 0
+    int b=0;                      |          mov     DWORD PTR [rbp-4], 0    ; a = 0          first for loop iterator intialization
+    int c=0;                      |          jmp     .L2
+    int d=0;                      |  .L9:
+                                  |          mov    eax, DWORD PTR [rbp-4]            
+    int t1,t2,t3,t4;              |          mov     DWORD PTR [rbp-20], eax           t1  =  a     
+                                  |          mov     DWORD PTR [rbp-8], 0              b = 0
+    for(a=0;a<=5;a++)             |          jmp     .L3
+    {                             |  .L8:
+        t1=a;                     |          mov    eax, DWORD PTR [rbp-8]         
+        for(b=0;b<=6;b++)         |          mov     DWORD PTR [rbp-24], eax           t2  =  b 
+        {                         |          mov     DWORD PTR [rbp-12], 0             c = 0
+            t2=b;                 |          jmp     .L4
+            for(c=0;c<=7;c++)     |  .L7:
+            {                     |          mov    eax, DWORD PTR [rbp-12]        
+                t3=c;             |          mov     DWORD PTR [rbp-28], eax           t3  =  c
+                for(d=0;d<=8;d++) |          mov     DWORD PTR [rbp-16], 0             d = 0
+                {                 |          jmp     .L5
+                    t4=d;         |  .L6:
+                }                 |          mov    eax, DWORD PTR [rbp-16]
+            }                     |          mov     DWORD PTR [rbp-32], eax            t4  =  d
+        }                         |          add     DWORD PTR [rbp-16], 1             ;  d++
+    }                             |  .L5:
+                                  |          cmp     DWORD PTR [rbp-16], 8             ;  d<=8    fourth for loop condition checking
+    return 0;                     |          jle     .L6
+}                                 |          add     DWORD PTR [rbp-12], 1             ;  c++
+                                  |  .L4:
+                                  |          cmp     DWORD PTR [rbp-12], 7             ;  c<=7    third for loop condition checking
+                                  |          jle     .L7
+                                  |          add     DWORD PTR [rbp-8], 1              ;  b++
+                                  |  .L3:
+                                  |          cmp     DWORD PTR [rbp-8], 6              ;  b<=6    second for loop condition checking
+                                  |          jle     .L8
+                                  |          add     DWORD PTR [rbp-4], 1              ;  a++  
+                                  |  .L2:
+                                  |          cmp     DWORD PTR [rbp-4], 5              ;  a<=5    first for loop condition checking
+                                  |          jle     .L9
+                                  |          mov     eax, 0
+                                  |          pop     rbp
+                                  |          ret
+__________________________________|__________________________________________________________________________________________________________________________________________________________________________________
+
+handcoded assembly for above c code
+-----------------------------------
+
+first_for_intialization:
+mov     DWORD PTR [rbp-4], 0 
+jmp first_for_condition_checking
+
+	first_for_body:
+	mov eax , DWORD PTR [ebp-4]
+	mov DWORD PTR [ebp-20] , eax
+
+		second_for_intialization:
+		mov     DWORD PTR [rbp-8], 0  
+		jmp second_for_condition_checking
+
+			second_for_body:
+			mov eax , DWORD PTR [ebp-8]
+			mov DWORD PTR [ebp-24] , eax
+
+				third_for_initialization:
+				mov     DWORD PTR [rbp-12], 0 
+				jmp third_for_control_checking
+
+					third_for_body:
+					mov eax , DWORD PTR [ebp-12]
+					mov DWORD PTR [ebp-28] , eax
+
+						fourth_for_initialization:
+						mov DWORD PTR [ebp-16] , 0
+						jmp four_for_control_checking
+
+							fourth_for_body:
+							mov DWORD PTR [ebp-16] , eax
+							mov eax , DWORD PTR [epb-32]
+
+						fourth_for_control_checking:
+						cmp DWORD PTR [ebp-16] , 8
+						jle fourth_body
+
+				third_for_control_checking:
+				cmp DWORD PTR [rbp-12],7
+				jle third_for_body
+
+		second_for_condition_checking:
+		cmp DWORD PTR [rbp-8],6
+		jle second_for_body
+
+first_for_condition_checking:
+cmp     DWORD PTR [rbp-4], 5  
+jle first_for_body
+________________________________________________________________________________________________________________________________________________________________________________________________________________
+                                +
+#include<stdio.h>               |   mov dword ptr [ebp-4] , 0
+int main()                      |   mov dword ptr [ebp|8] , 0
+{                               |   mov dword ptr [ebp|12] , 0
+    int a=0,b=0,c=0,d=0;        |   mov dword ptr [epb-16] , 0
+    int t1,t2,t3,t4;            |
+                                |
+   for(a=0;a<=5;a++)            |   first_for_initialization:
+   {                            |   mov dword ptr [ebp-4] , 0
+       t1=a;                    |   jmp first_for_condition_checking
+                                |
+       for(b=0;b<=6;b++)        |   	first_for_body:
+       {                        |   	mov eax , dword ptr [ebp-4]
+           t2=a;                |   	mov dword ptr [ebp-20] , eax
+           for(c=0;c<=7;c++)    |
+           {                    |   	second_for_intialization:
+               t3=a;            |   	mov dword ptr [ebp-8] , 0
+               					|		jmp second_for_condition_checking
+               for(d=0;d<=8;d++)|
+               {                |   		second_for_body:
+                  t4=a;         |   		mov eax , dword ptr [ebp-8]
+               }                |   		mov dword ptr [ebp-24] , eax
+            t3=a;               |
+           }                    |   			third_for_intialization:
+           t2=a;                |   			mov dword ptr [ebp-12] , 0
+           						|				jmp third_for_control_checking
+       }                        |
+       t1=a;                    |   				third_for_body:
+   }                            |   				mov eax , dword ptr [ebp-12]
+}                               |   				mov dword ptr [ebp-28] , eax
+                                |
+                                |   					fourth_for_initialization:
+                                |   					mov dword ptr [ebp-16] , 0
+                                |						jmp fourth_for_condition_checking
+                                |
+                                |   						fourth_for_body:
+                                |   						mov eax ,dword ptr [ebp-16] , eax
+                                |   						mov dword ptr [ebp-32] , eax
+                                |
+                                |   						mov eax ,dword ptr [ebp-16] , eax
+                                |   						mov dword ptr [ebp-32] , eax
+                                |
+                                |   						fourth_for_iteration:
+                                |   						add dword ptr [ebp-16] , 1
+                                |
+                                |   					fourth_for_condition_checking:
+                                |   					cmp dword ptr [ebp-16] , 8
+                                |   					jle fourth_for_body
+                                |
+                                |   					mov eax , dword ptr [ebp-12]
+                                |   					mov dword ptr [ebp-28] , eax
+                                |
+                                |   					third_for_iteration:
+                                |   					add dword ptr [ebp-12] , 1
+                                |
+                                |   			third_for_condition_checking:
+                                |   			cmp dword ptr [ebp-12] , 7
+                                |                   	jle third_for_body
+                                |
+                                |   			mov eax , dword ptr [ebp-12]
+                                |   			mov dword ptr [ebp-28] , eax
+                                |
+                                |   			second_for_iteration:
+                                |   			add dword ptr [ebp-8] , 1
+                                |
+                                |   	second_for_condtion_checking:
+                                |   	cmp dword ptr [ebp-8] , 6
+                                |   	jle second_for_body
+                                |
+                                |           mov eax , dword ptr [ebp-4]
+                                |   	mov dword ptr [ebp-20] , eax
+                                |
+                                |   	first_for_iteration:
+                                |   	add dword ptr [ebp-4] , 1
+                                |
+                                |   first_for_condition_checking:
+                                |   cmp dword ptr [ebp-4] , 5
+                                |   jle first_for_body
+                                |
+________________________________|_______________________________________________________________________________________________________________________________________________________________________________
+
+while loop
+----------
+
+while loop in assembly has 2 parts.
+
+1.checking condition
+2.body_of_the_loop
+
+
+checking condition
+------------------
+* in while loop , condition is first checked.
+* then only the body of the loop is get executed deponds on the result of condtion.
+* this part can not be skipped
+
+body of the loop
+----------------
+* the body of the loop will execute only if condition is true
+* we can have empty loop that does nothing.
+________________________________________________________________________________________________________
+
+simple while loop
+------------------
+                   +
+#include<stdio.h>  | main:
+int main()         |         push    rbp
+{                  |         mov     rbp, rsp
+    int a = 0;     |         mov     DWORD PTR [rbp-8], 0
+    int b = 0;     |         mov     DWORD PTR [rbp-4], 0
+                   |         jmp     .L2
+    while(a<=10)   | .L3:
+    {              |         add     DWORD PTR [rbp-4], 1    | ++b
+        ++b;       | .L2:
+    }              |         cmp     DWORD PTR [rbp-8], 10   | checking condition
+}                  |         jle     .L3
+                   |         mov     eax, 0
+                   |         pop     rbp
+                   |         ret
+_________________________________________________________________________________________________________
+
+nested while loop
+-----------------
+
+#include<stdio.h>       |  main:                                   |  mov dword ptr [ebp-4] , 0
+int main()              |          push    rbp                     |  mov dword ptr [ebp-8] , 0
+{                       |          mov     rbp, rsp                |  mov dword ptr [ebp-12] , 0
+    int a = 0;          |          mov     DWORD PTR [rbp-4], 0    |
+    int b = 0;          |          mov     DWORD PTR [rbp|8], 0    |  jmp first_While_Loop_condition_checking
+    int c = 0;          |          mov     DWORD PTR [rbp|12], 0   |
+    int d = 0;          |          mov     DWORD PTR [rbp|16], 0   |  first_while_loop_body:
+    int e = 0;          |          mov     DWORD PTR [rbp|20], 0   |
+    int f = 0;          |          mov     DWORD PTR [rbp-24], 0   |  add dword ptr [ebp-4] , 10
+                        |          jmp     .L2                     |  jmp second_while_loop_condition_checking
+    while(a<=10)        |  .L7:                                    |
+    {                   |          add     DWORD PTR [rbp-4], 10   |  	second_while_loop_body:
+        a=a+10;         |          jmp     .L3                     |  	add dword ptr [ebp-8] , 9
+        while(b<=9)     |  .L6:                                    |  	jmp third_while_loop_condition_checking
+        {               |          add     DWORD PTR [rbp-8], 9    |
+            b=b+9;      |          jmp     .L4                     |  		third_while_loop_body:
+            while(c<=8) |  .L5:                                    |  		add dword ptr [ebp-12] , 9
+            {           |          add     DWORD PTR [rbp-12], 9   |
+                c=c+9;  |  .L4:                                    |  		third_while_loop_condition_checking:
+            }           |          cmp     DWORD PTR [rbp-12], 8   |  		cmp dword ptr [ebp-12] , 8
+            b=b+9;      |          jle     .L5                     |  		jle third_while_loop_body
+        }               |          add     DWORD PTR [rbp-8], 9    |
+       a=a+10;          |  .L3:                                    |  		add dword ptr [ebp-12] , 9
+    }                   |          cmp     DWORD PTR [rbp-8], 9    |
+}                       |          jle     .L6                     |  	second_while_loop_condition_checkig:
+                        |          add     DWORD PTR [rbp-4], 10   |  	cmp dword ptr [ebp-8] , 9
+                        |  .L2:                                    |  	jle second_while_loop_body
+                        |          cmp     DWORD PTR [rbp-4], 10   |
+                        |          jle     .L7                     |  	add dword ptr [ebp-4] , 10
+                        |          mov     eax, 0                  |
+                        |          pop     rbp                     |  first_While_loop_condition_checking:
+                        |          ret                             |  cmp dword ptr [ebp-4] , 10
+                        |                                          |  jle first_whle_loop_body
+                        |                                          |
+________________________|__________________________________________|_______________________________________
+
+do while loop
+-------------
+
+do while in assembly has two parts.
+
+1.condition checking
+2.body of the loop
+
+condition checking
+------------------
+* condition checking happens after executing the loop body at least once.
+* this is the basic difference between while and do while
+* we can have empty condition checking
+
+body of the loop:
+-----------------
+* body of the loop is get executed before checking condition at least once 
+* this can be empty 
+________________________________________________________________________________________________________
+
+                     |
+#include<stdio.h>    |  main:
+int main()           |          push    rbp
+{                    |          mov    rbp, rsp
+    int a = 0;       |          mov     DWORD PTR [rbp-8], 0
+    int b = 0;       |          mov     DWORD PTR [rbp-4], 0
+                     |  .L2:
+    do               |          add     DWORD PTR [rbp-4], 2
+    {                |          cmp     DWORD PTR [rbp-8], 10
+        b=b+2;       |          jle     .L2
+    }                |          mov     eax, 0
+    while(a<=10);    |          pop     rbp
+                     |          ret
+}                    |
+_____________________|__________________________________________________________________________________
+
+nested do while loop
+--------------------
+
+                           +                                          +
+                           |                                          |
+#include<stdio.h>          |  main:                                   |  movDWORD PTR [ebp-4] , 0
+int main()                 |          push    rbp                     |  mov DWORD PTR [ebp|8] , 0
+{                          |          mov     rbp, rsp                |  mov DWORD PTR [ebp-16] , 0
+    int a = 0;             |          mov     DWORD PTR [rbp-4], 0    |
+    int b = 0;             |          mov     DWORD PTR [rbp|8], 0    |  first_do_while_body:
+    int c = 0;             |          mov     DWORD PTR [rbp-12], 0   |  add DWORD PTR [ebp-4] , 2
+                           |  .L4:                                    |
+    do                     |          add     DWORD PTR [rbp-4], 2    |  	second_do_while_body:
+    {                      |  .L3:                                    |  	add DWORD PTR [ebp-8] , 2
+        a=a+2;             |          add     DWORD PTR [rbp-8], 2    |
+        do                 |  .L2:                                    |  		third_do_while_body:
+        {                  |          add     DWORD PTR [rbp-12], 2   |  		add DWORD PTR [ebp-12] , 2
+            b=b+2;         |          cmp     DWORD PTR [rbp-12], 10  |
+            do             |          jle     .L2                     |  		third_do_while_body:
+            {              |          add     DWORD PTR [rbp-8], 2    |  		cmp DWORD PTR [ebp-12] , 8
+                c=c+2;     |          cmp     DWORD PTR [rbp-8], 10   |  		jle third_do_while_body
+            }              |          jle     .L3                     |  		add DWORD PTR [ebp-8] , 2
+            while(c<=10);  |          add     DWORD PTR [rbp-4], 2    |
+            b=b+2;         |          cmp     DWORD PTR [rbp-4], 10   |  	second_do_while_condition_checking:
+        }                  |          jle     .L4                     |  	cmp DWORD PTR [ebp-8] , 9
+        while(b<=10);      |          mov     eax, 0                  |  	jle second_do_while_body
+        a=a+2;             |          pop     rbp                     |  	add DWORD PTR [ebp-4] , 2
+    }                      |          ret                             |
+    while(a<=10);          |                                          |  first_do_while_condition_checking:
+}                          |                                          |  cmp DWORD PTR [ebp-4] , 10
+                           |                                          |  jle first_do_while_body
+                           |                                          |
+________________________________________________________________________________________________________

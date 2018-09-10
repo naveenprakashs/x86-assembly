@@ -1,0 +1,101 @@
+Pseudo instrucions
+------------------
+
+initializing data
+-----------------
+ 
+DB - define byte               8 bit   1 byte
+DW - define word              16 bit   2 byte
+DD - define doube word        32 bit   4 byte
+    
+DQ - define quad word         64 bit   8 byte
+DT - define ten bytes         80 bit  10 byte
+DO - define octa word        128 bit  16 byte
+DY - YMM                     256 bit  32 byte
+DZ - ZMM                     512 bit  64 byte
+
+
+uninitialized data
+------------------
+
+RESB - reserve word          
+RESW - reserve word
+RESD - reserve double word
+RESQ - reserve quad word
+REST - reserve ten bytes
+RESO - reserve octa word
+RESY - define
+RESZ - define
+
+
+EQU  - defines a symbol to a given constant 
+
+TIMES - 
+
+
+XMM0 - (0-127)  
+YMM0 - (128-255)
+ZMM0 - (256-511)
+
+
+_______________________________________________________________________________________________________________
+
+reg8 -8 bit register
+reg16 -16 bit register
+reg32 -32 bit register
+
+
+imm - immediate value
+imm8 
+imm16
+imm32
+
+
+mem - memory address
+mem8 - 3 bit address
+mem16 - 16 bit address
+mem32 - 32 bit address
+
+r/m8 - 8 bit register or memory
+r/m16 - 16 bit register or memory
+r/m32 - 32 bit register or memory
+r/m64 -64 bit register or memory
+
+__________________________________________________________________________________________________________________________
+
+age db 10
+
+mov eax , age 
+-------------
+
+the assembler will replace age with it's address while assembling. then the address will be treated as immediate value.
+
+  mov eax , age  -->   mov eax , 0x1000
+
+here we assumed that age is located at 0x1000.
+
+then the address will be copied to eax register.
+
+register names are going to replaced with their addresses while assembling our assembly code.
+
+
+_________________________________________________________________________________________________________________________
+
+section .data
+message .db 'hello'
+messageLength EQU $-message
+
+section .text
+
+mov eax , message    -- as we seen before the address of message will be copied into eax register.and now here is a catch
+
+mov eax , messageLength  -- it will move 5 to the eax register, it won't move the address of messageLength. because it is 
+                            like preprocessor in c. 
+
+                            #define  messageLength  5
+
+                            it is even not considered as constant value. because constant value has a memory location for 
+                            it.so messageLength will be replaced with a value  during assembly process of our program.
+                            after compiling our assembly program there will be no memory location for it.there will be nothing like messgeLength.
+__________________________________________________________________________________________________________________________
+

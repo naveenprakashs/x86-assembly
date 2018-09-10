@@ -1,0 +1,332 @@
+Addressing modes
+----------------
+
+it is how we get the data for a given assembly instruction.
+
+we can supply data through 
+1. CONSTANTS
+2. REGISTERS
+3. MEMORY VARIABLES
+
+how the data is addressed in the instruction to be used.
+
+types of addressing modes
+-------------------------
+
+ Resigter addressing
+ Immediate addressing
+ Direct addressing
+ Register indirect addressing
+ Direct indexed addressing
+ Base indexed addressing
+____________________________________________________________________________________________________________________________________ 
+
+DATA , OPERANDS , RESULT , POST-UP LOCATION
+--------------------------------------------
+
+movl %eax , %ebx
+
+DATA --> what is inside %eax register , not %eax register
+
+OPERANDS --> operand is what contains the data for a pariticular operation.
+
+POST-UP LOCATION --> it is not the operand or data. it is location where the result is going to be stored.
+
+RESULT --> result is the data which comes finally after calculation
+
+____________________________________________________________________________________________________________________________________
+
+intel syntax and nasm assembler
+-------------------------------
+
+
+hint::   we can't reference two memory location for a single instruction. it can be a register
+
+
+register addressing
+--------------------
+
+when a register holds the data which required for an operation is called as register addressing.
+
+mov [num1] , eax         ; moving (copying) the value of eax to num1
+
+mov eax , num1           ; moving (copying) the address of num1 to eax register
+
+mov eax , ebx            ; moving the content of ebx to eax register
+
+
+
+
+immediate addressing
+--------------------
+
+mov al , 0x01            ; moving the constant value 01 to al register
+
+add [num1] , 0x01        ; adding the constant value 01 to num1 variable
+
+
+
+
+Direct memory addressing
+-------------------------
+
+we are accessing the RAM directly to access data for calculations.
+
+mov al , byte [num1]      ; we are accessing RAM to get the value of num1 for moving it into eax register
+                          ; in direct addressing  mode we have specify how many byte to be fetched
+
+
+mov [num1] , eax           ; we are adding eax register contents to num1 variable
+
+
+
+Direct offset addressing
+------------------------
+          
+using arithmetics to modify address. we are doing arithmetic to modify the address and accessing the value in RAM.
+
+like accessing array elements using adding one or two.
+
+
+myName db 'naveen'
+
+mov al , byte [myName+0]  'n'     al='n'
+mov al , byte [myName+1]  'a'     al='a'  
+mov al , byte [myName+2]  'v'     al='v'
+mov al , byte [myName+3]  'e'     al='e'
+mov al , byte [myName+4]  'e'     al='e'
+mov al , byte [myName+5]  'n'     al='n'
+
+
+
+
+Indirect memory addressing or register indirect
+------------------------------------------------
+
+we copy the address of a variable into a register , then we dereference the address.
+
+we indirectly accessing the data in memory . so it is called as indirect address mode.
+
+
+name RESB 10
+
+mov eax , name
+
+mov [eax] ,   byte 'a'      name[0] = a
+mov [ebx+1] , byte 'b'      name[1] = b
+mov [ebx+2] , byte 'c'      name[2] = c
+mov [ebx+3] , byte 'd'      name[3] = d
+
+________________________________________________________________________________________________________________________________________
+
+
+
+
+
+
+
+
+
+
+______________________________________________________________________________________________________________________________________
+
+addtion example
+---------------
+
+addtion takes two number
+
+movl $1 , %ecx
+addl $2 , %ecx
+
+OPERANDS --> constant $2 , %ecx
+
+RESULT --> 3
+
+DATA --> numerical value 2 and (1 in the ecx register )
+
+POST-UP LOCATION --> ecx
+____________________________________________________________________________________________________________________________________
+
+ divition example
+ ----------------
+ 
+ movl $0 , %edx               ; clearing the edx register 
+ movl  var1   , %eax
+ divl  var2
+ ____________________________________________________________________________________________________________________________________
+
+Resigter Addressing
+-------------------
+
+movl $10 , %eax
+
+wherever we use some register to refer some data
+%eax --> register ( destination parameter )
+
+add1 %eax , %edx  ( source and destination format gas assembly syntax )
+
+we use source and destination parameter as register so it is register addressing.
+____________________________________________________________________________________________________________________________________
+
+immediate addressing
+--------------------
+
+when we specify a CONSTANT as a part of our instruction
+
+movl $10  , %eax
+ 
+ $10 --> constant , immediate addressing
+ %eax --> register addressing
+ 
+ subl $0 , %ebx
+ 
+ %ebx --> register addressing
+      $0 --> immediate addressing
+ ____________________________________________________________________________________________________________________________________
+
+direct addressing
+-----------------
+
+direct addressing is whenever we use variable as part of our instruction
+memory accessing required
+
+mov1  $10  ,  x
+
+x --> variable
+$10 --> constant
+
+$10 --> immediate addressing
+x     --> direct addressing
+
+movl $19 , %eax
+mull z                        ( mull automatically takes %eax  and result is stored in %eax register )
+
+%eax --> register addressing
+z --> direct addressing
+$19 --> immediate addressing
+____________________________________________________________________________________________________________________________________
+
+Arrays and Pointers
+-------------------
+
+all pointers in 32 bit machines are 32 bits or 4 bytes
+bcoz they need to be able to address upto 32 bits
+
+
+ int a;
+ int *b;  
+ a = 0;
+ b = &a;
+ *b = 10;
+ int c = 20;
+ b = &c;
+
+address   value
+ 0x100       
+ 0x104       
+ 0x108
+ 0x10c
+ 0x110       
+ 
+ 
+ name               location                     value             instruction
+
+  a                  0x100                         0                  int a = 0
+  b                  0x104                         0x100              int *b=&a
+  a                  0x100                         10                 *b=10; 
+  c                  0x110                         20                 int c = 20;
+  b                  0x110                         0x110              b = &c;
+  
+  print c --> 20
+  print *b --> 20
+  
+  *  --> value at the address 
+  & --> address of
+  
+ Arrays
+--------
+
+ array name is a constant pointer. we can't increment or decrement.
+ [ ] --> for dereferencing
+ 
+ * ( b+4 ) == b [4]
+ 
+ int a[5];
+ 
+ a[0]=10;
+ a[1]=20;
+ a[2]=30;
+ 
+ int *b = &a;       // b = 0x100
+ *b=10;              //  0x100 = 10 = a[0]
+ 
+ b[4] -> * ( 0x100 + ( 4 * 4 ) ) = * ( 0x100 + 16 ) = *( 0x116)
+
+  a points to the location "0x100"  
+  base address is 0x100
+  
+            base
+			address  offset
+  a[0] = 0x100 + ( 0 * 4 ) = 0x100 + 0 = 0x100
+  a[1] = 0x100 + ( 1 * 4 ) = 0x100 + 4 = 0x104
+  a[2] = 0x100 + ( 2 * 4 ) = 0x100 + 8 = 0x108
+  
+  a[0] = 0x100 = 10
+  a[1] = 0x104 = 20
+  a[2] = 0x108 = 30
+  
+  a=40;   0x100 = 40; 
+____________________________________________________________________________________________________________________________________
+
+ Direct Addressing
+------------------
+
+ working with variables , memory access happens through memory bus
+ 
+ .comm   x  ,  12            ; declaring x variable of 12 bytes
+ movl     $-1 ,  x             ; x[0] = -1
+ movl     $ 0 , x+4          ; x[1] =   0  ; we are adding offset 4
+
+// only one access to main memory for a instruction
+// copying x into x+8
+// movl x , x+8     won't work
+
+ movl    x , %eax            ; copy x into eax register
+ movl    %eax , x+8       ; copy eax value into x+8 ; we are adding offset 8
+ 
+ address         value
+ 0x100             -1         x
+ 0x104              0         x+4
+ 0x108             -1         x+8
+ 
+ we are limited to one memory access per instruction. we cant to movl ( x , x+8 )
+ ____________________________________________________________________________________________________________________________________
+
+ register indirect addressing 
+ ----------------------------
+
+ in register indirect addressing , register has the address  instead of  data in itself
+ 
+ register direct addressing       movl %eax , %ebx           copy eax into ebx
+ register indirect addressing    movl %eax , (%ebx)         copy eax into the address that ebx contains
+ 
+$ give the numerical value of or address of
+ 
+ .comm  a  , 12                  ; a is  a variable of 12 bytes
+ .comm  b  , 4                   ; b is a pointer
+ movl  $0 , a                    ; se the value of a to 0
+ movl  $a , b                    ;  b = &a 
+ movl  b , %eax                  ; copying b's value to eax register
+ movl  $10 , ( %eax )            ; *b = 10
+ movl $20 , 8( %eax)             ;  * ( b + 8 ) = 20 ; we already have base in eax and we just need to add offset
+
+variable --> pointer gets variables address --> pointer's value copied into register --> register has variables address --> then we are writing at the address which register holds
+ ____________________________________________________________________________________________________________________________________
+
+ base index addressing
+ ----------------------
+
+ 
+
+__________________________________________________________________________________________________________________________________
+

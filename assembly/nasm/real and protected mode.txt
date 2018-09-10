@@ -1,0 +1,175 @@
+8080
+----
+
+8 bit processor
+8 bit data bus
+16 bit address bus [  0 - 65,535 memory locations can be addressed directly ]
+simple addressing mode - you put 16 bit address in ADDRESS BUS and get 8 bit data in DATA BUS
+real mode flat memory model
+[ don't wonder how to send 16 bit address using 8 bit registers , because processor provides some combination 8 bit registers to make 16 bit address]
+
+____________________________________________________________________
+
+8086-8087
+----------
+16 bit processor
+20 bit address bus  [ 0 - 10,48,575 memory locations can be addressed using segmentation ]
+16 bit data bus
+segmented addressing mode
+it has 8087 floating point coprocessor
+real mode segmented memory model
+
+
+8088  ( less cost than 8086 )
+----
+16 bit processor
+8 bit data bus
+20 bit address bus
+segmented addressing mode
+real mode segmented memory model
+
+
+80186-80187
+-----------
+same as 8086
+addition of some new instructions
+optimization of old instructions
+increase in the clock speed
+
+_________________________________________________________
+
+80286 - 80287
+-------------
+16 bit processor
+protected mode was introduced.
+support for switching back from protected mode to real mode
+_________________________________________________________
+
+80386 - 80387
+-------------
+
+it was the first 32 bit intel processor
+protected mode flat model introduced
+32 bit registers
+32 bit address bus
+16 bit data bus
+
+________________________________________________________________________________________________________________________________________________________________________
+
+number of different ways to address memory in the x86 CPU family. Each of these ways is called a memory model. 
+
+real mode flat model      - CP/M-80  -  [ 8080 ]
+real mode segmented model - DOS uses this model - [  8086 - 8088 - 80186 ]
+protected mode flat model - modern operating system uses this model [ 80286 - 80386 - ]
+
+
+8085 program
+------------
+
+
+A,B,C - registers
+LDA - LOAD A
+STA - STORE A
+
+MV1 C, 00
+LDA 4200       ; memory is directly accessible in real mode flat model
+MOV B , A
+LDA 4201       ; memory is directly accessible in real mode flat model
+ADD B
+JNC LABEL1
+INRC
+LABEL1: STA 4202   ; memory is directly accessible in real mode flat model
+MOV A , C
+STA 4203           ; memory is directly accessible in real mode flat model
+HLT
+
+
+while we try to run our program written for 8080 in 8086 , there must be backward compatability. 
+
+because 8085 has 16 bit address bus so it used 16 bit addressing system.
+
+but 8086 has 20 bit addressing  so it uses 20 bit addressing.
+
+so to make 8080 compatable with 8086 , intel designers came up with an idea called segmentation.
+
+they introduced four Segment registers  CS , DS , SS , ES.
+
+segment registers contains the segment number , segment alwasy begins the address that is evenly divisible by 16.
+
+address = 0   segment = 0
+address = 16  segment = 1
+address = 32  segment = 2
+address = 64  segment = 3
+address = 128 segment = 4
+
+offest can be 0 to 65,535
+
+physical address = ( 16 * segment) + offset
+
+physical address = ( 16 *2) + 100
+                 
+                 =  32 + 100 
+
+physical address =  132
+
+segments can overlap
+--------------------
+segment = 2 , offset = 100  --> address 132
+segment = 3 , offset = 84   --> address 132
+segment = 1 , offset = 132  --> address 132
+
+
+while coding a program , we only give the offset address
+
+LDA 4201 ; this is an 8080 instruction
+
+we have to set CS = segment number , then the CPU MMU will calculate the effective address using segment number and offset .
+
+so using this technique we can run 8080 program in 8086
+
+LDA 4201 ;  --> offset = 4201 and segment = 0 so  physical address = ( 0 * 16 ) + 132
+
+in 8086 we have 20 address bus , so we have  [ (2^20)-1 ] individual address
+
+so we have  1,048,575 addresses.
+
+in 1,048,575 we can have 16 segments without overlapping.
+________________________________________________________________________________________________________________________________________________________________________
+
+legacy region while BOOTING
+---------------------------
+
+
+       +---------------------------------------------+  +-+  segment E and F can be contain BIOS or DRAM
+64 KB  |                                             |    |
+       |                segment F                    |    |  FFFF0H this where the execution begins after power on
+       +---------------------------------------------+    |  it is exactly 16 bytes below 1MB
+64 KB  |                                             |    |
+       |                segment E                    |    |
+       +---------------------------------------------+  +-+
+64 KB  |                                             |    | segments D and C contains optional ROM
+       |                segment D                    |    | it is also called as expansion ROM
+       +---------------------------------------------+    |
+64 KB  |                                             |    |
+       |                segment C                    |    |
+       +---------------------------------------------+  +-+
+64 KB  |                                             |    | SM RAM or VGA buffer
+       |                segment B                    |    |
+       +---------------------------------------------+    |
+64 KB  |                                             |    |
+       |                segment A                    |    |
+       +---------------------------------------------+  +-+
+       |                                             |    |
+       |                                             |    |
+       |                                             |    |
+       |                                             |    |
+       |                                             |    | BIOS data area  ( BDA )
+       |                                             |    |
+       |                                             |    |
+       |                                             |    |
+       |                                             |    |
+       +---------------------------------------------+ +-++
+64 KB  |                                             |    |  contains Interrupt Vector Table
+       |                  segment 0                  |    |
+       +---------------------------------------------+ +--+
+        

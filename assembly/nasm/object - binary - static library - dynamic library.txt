@@ -1,0 +1,8 @@
+.lib files are static libraries in windows
+.a files are static libraries in linux
+
+.so files are dynamic libraries in linux
+.dll files are dynamic in windows
+
+
+
