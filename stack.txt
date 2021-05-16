@@ -6,8 +6,17 @@ base pointer and stack pointer both creates a stack frame for a function ( start
 when we enter a function on we have to create a stack frame for that function 
 when we leave a function we have to restores the stack frame of the caller function 
 
+creating stack frame for a function
+-----------------------------------
+to create a stack frame we have to assign correct values for base pointer and stack pointer
+
+for base pointer we have to initialize the base pointer with the value of stack pointer
+for stack pointer we have to subtract the stack pointer with number of bytes we need.
+
 restoring the frame
 -------------------
-we clear allocated stack for the current function by adding a number ( add esp , 4) , or by assiging the esp ( mov esp , ebp ) 
-once we cleared the stack , we will have stack pointer restored 
-then we have to restore the base pointer , to restore the base pointer we have to pop the stack pushed for the
+to restore the stack frame we have to assing the previous value for base pointer and stack pointer. 
+
+for restoring the stack pointer we have to assing the current function's base pointer to stack pointer. 
+for restoring the base pointer we have to push previous functions base pointer as first thing in our function , 
+then after clearing the stack pointer we have to POP stack to restore the base pointer.
