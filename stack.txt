@@ -1,0 +1,13 @@
+base pointer -> starting address of the stack
+stack pointer -> ending address of the stack
+
+base pointer and stack pointer both creates a stack frame for a function ( starting address in the stack - ending address in the stack makes  a stack frame )
+
+when we enter a function on we have to create a stack frame for that function 
+when we leave a function we have to restores the stack frame of the caller function 
+
+restoring the frame
+-------------------
+we clear allocated stack for the current function by adding a number ( add esp , 4) , or by assiging the esp ( mov esp , ebp ) 
+once we cleared the stack , we will have stack pointer restored 
+then we have to restore the base pointer , to restore the base pointer we have to pop the stack pushed for the
