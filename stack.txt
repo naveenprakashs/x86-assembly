@@ -26,5 +26,5 @@ PUSH -> push instruction automatically decrements the stack before pushing the v
 POP -> pop instruction automatically increments the stack after the poping the value out of the stack
 
 
-CALL -> call instruction automatically decrements the stack before pushing return address to the stack
-RET -> return instruction automatically increments the stack after poping the return address out of the stack
+CALL -> call instruction automatically decrements the stack before pushing return address (EIP) to the stack
+RET -> return instruction automatically increments the stack after poping the return address (EIP) out of the stack
