@@ -31,3 +31,8 @@ RET -> return instruction automatically increments the stack after poping the re
 
 ENTER -> pushes the EBP to stack , assigns EBP = ESP   -> saves old EBP , assinges new EBP
 LEAVE -> makes ESP points to the EBP , pops the EBP    -> restores the ESP and EBP
+
+why do we need the stack pointer 
+--------------------------------
+when function B is called inside function A, function B will now know how much stack memory is used by function A. so the function A stores the last address of the stack (Top of the stack) in the stack pointer. when B looks at the address stored in the stack pointer it knows when the stack of A ends. 
+
