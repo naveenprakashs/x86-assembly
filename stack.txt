@@ -28,3 +28,6 @@ POP -> pop instruction automatically increments the stack after the poping the v
 
 CALL -> call instruction automatically decrements the stack before pushing return address (EIP) to the stack
 RET -> return instruction automatically increments the stack after poping the return address (EIP) out of the stack
+
+ENTER -> pushes the EBP to stack , assigns EBP = ESP   -> saves old EBP , assinges new EBP
+LEAVE -> makes ESP points to the EBP , pops the EBP    -> restores the ESP and EBP
