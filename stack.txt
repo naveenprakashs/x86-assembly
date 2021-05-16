@@ -1,3 +1,5 @@
+stack frame -> starting_address[base pointer] -- ending_address[stack pointer]
+
 base pointer -> starting address of the stack
 stack pointer -> ending address of the stack
 
