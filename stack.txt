@@ -1,6 +1,8 @@
-stack frame -> starting_address[base pointer] -- ending_address[stack pointer]
+stack frame -> the memory area between base pointer and stack pointer.
 
-base pointer -> starting address of the stack
+STACK GROWS DOWNWORDS.
+
+base pointer -> starting address of the stack 
 stack pointer -> ending address of the stack
 
 base pointer and stack pointer both creates a stack frame for a function ( starting address in the stack - ending address in the stack makes  a stack frame )
