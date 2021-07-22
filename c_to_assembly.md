@@ -2,7 +2,6 @@
 
 
 ## local variables
-### C 
 - local variables are stored in stack
 - local variables are referenced relative to base pointer 
 - stack grows downwards in x86_64  highest -> lowest memory 
@@ -10,6 +9,7 @@
 - we can access 128 bytes below stack pointer without modifying stack pointer
 
 
+### C 
 ```C 
 void test() {
     int sum = 0;
@@ -33,3 +33,4 @@ test:
   ret
 ```
 
+## function parameters
