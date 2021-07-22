@@ -34,3 +34,5 @@ test:
 ```
 
 ## function parameters
+- some function parameters are passed on registers 
+- some other functio parameters are passed on stack 
