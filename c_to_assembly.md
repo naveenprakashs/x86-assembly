@@ -1,5 +1,34 @@
 # Conversion of c constructs to x86_64 assembly
 
+
+## local variables and parameters
+### C 
+```c
+int add(int first_num, int second_num) {
+    int sum = 0;
+    char c = 'a';     
+    sum = first_num + second_num;
+    return sum;
+}
+```
+### x86_64
+```assembly 
+add:
+  push rbp
+  mov rbp, rsp
+  mov DWORD PTR [rbp-20], edi  first_num
+  mov DWORD PTR [rbp-24], esi  second_num
+  mov DWORD PTR [rbp-4], 0     sum 
+  mov BYTE PTR [rbp-5], 97
+  mov edx, DWORD PTR [rbp-20]
+  mov eax, DWORD PTR [rbp-24]
+  add eax, edx                 
+  mov DWORD PTR [rbp-4], eax  sum = 0
+  mov eax, DWORD PTR [rbp-4]   
+  pop rbp
+  ret
+```
+
 ## For loop
 
 ### C 
